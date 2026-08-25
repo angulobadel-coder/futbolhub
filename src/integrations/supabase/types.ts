@@ -14,16 +14,330 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          max_age: number | null
+          min_age: number | null
+          name: string
+          school_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          max_age?: number | null
+          min_age?: number | null
+          name: string
+          school_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          max_age?: number | null
+          min_age?: number | null
+          name?: string
+          school_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "categories_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coaches: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          phone: string | null
+          school_id: string
+          specialty: string | null
+          status: Database["public"]["Enums"]["coach_status"]
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name: string
+          id?: string
+          phone?: string | null
+          school_id: string
+          specialty?: string | null
+          status?: Database["public"]["Enums"]["coach_status"]
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          phone?: string | null
+          school_id?: string
+          specialty?: string | null
+          status?: Database["public"]["Enums"]["coach_status"]
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coaches_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      players: {
+        Row: {
+          birth_date: string | null
+          category_id: string | null
+          created_at: string
+          document_id: string | null
+          full_name: string
+          guardian_email: string | null
+          guardian_name: string | null
+          guardian_phone: string | null
+          id: string
+          joined_at: string
+          notes: string | null
+          photo_url: string | null
+          position: string | null
+          school_id: string
+          status: Database["public"]["Enums"]["player_status"]
+          team_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          birth_date?: string | null
+          category_id?: string | null
+          created_at?: string
+          document_id?: string | null
+          full_name: string
+          guardian_email?: string | null
+          guardian_name?: string | null
+          guardian_phone?: string | null
+          id?: string
+          joined_at?: string
+          notes?: string | null
+          photo_url?: string | null
+          position?: string | null
+          school_id: string
+          status?: Database["public"]["Enums"]["player_status"]
+          team_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          birth_date?: string | null
+          category_id?: string | null
+          created_at?: string
+          document_id?: string | null
+          full_name?: string
+          guardian_email?: string | null
+          guardian_name?: string | null
+          guardian_phone?: string | null
+          id?: string
+          joined_at?: string
+          notes?: string | null
+          photo_url?: string | null
+          position?: string | null
+          school_id?: string
+          status?: Database["public"]["Enums"]["player_status"]
+          team_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "players_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "players_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "players_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          phone: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          phone?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+        }
+        Relationships: []
+      }
+      schools: {
+        Row: {
+          city: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          logo_url: string | null
+          name: string
+          slug: string
+        }
+        Insert: {
+          city?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          name: string
+          slug: string
+        }
+        Update: {
+          city?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
+      teams: {
+        Row: {
+          category_id: string | null
+          coach_id: string | null
+          created_at: string
+          id: string
+          name: string
+          school_id: string
+          season: string | null
+        }
+        Insert: {
+          category_id?: string | null
+          coach_id?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          school_id: string
+          season?: string | null
+        }
+        Update: {
+          category_id?: string | null
+          coach_id?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          school_id?: string
+          season?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teams_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "teams_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coaches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "teams_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          school_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          school_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          school_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      can_manage_school: { Args: { _school_id: string }; Returns: boolean }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_school_member: { Args: { _school_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "superadmin" | "director" | "coach" | "guardian" | "player"
+      coach_status: "activo" | "inactivo"
+      player_status: "activo" | "inactivo" | "suspendido" | "retirado"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +464,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["superadmin", "director", "coach", "guardian", "player"],
+      coach_status: ["activo", "inactivo"],
+      player_status: ["activo", "inactivo", "suspendido", "retirado"],
+    },
   },
 } as const
