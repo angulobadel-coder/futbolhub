@@ -7,7 +7,13 @@ import { toast } from "sonner";
 
 import { useTenant } from "@/lib/tenant";
 import { canManage } from "@/lib/api/tenancy";
-import { listCoaches, listTeams, removeRow, upsertCoach   type Draft,
+import {
+  listCoaches,
+  listTeams,
+  removeRow,
+  upsertCoach,
+  type Draft,
+} from "@/lib/api/school-data";
 } from "@/lib/api/school-data";
 import type { Coach } from "@/lib/api/client";
 import { PageHeader } from "@/components/common/page-header";
