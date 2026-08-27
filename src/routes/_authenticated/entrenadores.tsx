@@ -7,7 +7,13 @@ import { toast } from "sonner";
 
 import { useTenant } from "@/lib/tenant";
 import { canManage } from "@/lib/api/tenancy";
-import { listCoaches, listTeams, removeRow, upsertCoach } from "@/lib/api/school-data";
+import {
+  listCoaches,
+  listTeams,
+  removeRow,
+  upsertCoach,
+  type Draft,
+} from "@/lib/api/school-data";
 import type { Coach } from "@/lib/api/client";
 import { PageHeader } from "@/components/common/page-header";
 import { EmptyState, ErrorState, LoadingRows } from "@/components/common/states";
@@ -72,7 +78,7 @@ function CoachesPage() {
   });
 
   const saveMutation = useMutation({
-    mutationFn: (values: Partial<Coach> & { id?: string }) => upsertCoach(schoolId!, values),
+    mutationFn: (values: Draft<Coach>) => upsertCoach(schoolId!, values),
     onSuccess: () => {
       toast.success("Entrenador guardado");
       setCreating(false);
@@ -220,7 +226,7 @@ function CoachDialog({
   coach: Coach | null;
   pending: boolean;
   onClose: () => void;
-  onSave: (values: Partial<Coach>) => void;
+  onSave: (values: Draft<Coach>) => void;
 }) {
   const [status, setStatus] = useState<Coach["status"]>(coach?.status ?? "activo");
 

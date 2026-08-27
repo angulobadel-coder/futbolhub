@@ -13,6 +13,7 @@ import {
   listTeams,
   removeRow,
   upsertPlayer,
+  type Draft,
 } from "@/lib/api/school-data";
 import type { Player, PlayerStatus } from "@/lib/api/client";
 import { PageHeader } from "@/components/common/page-header";
@@ -102,7 +103,7 @@ function PlayersPage() {
   });
 
   const saveMutation = useMutation({
-    mutationFn: (values: Partial<Player> & { id?: string }) => upsertPlayer(schoolId!, values),
+    mutationFn: (values: Draft<Player>) => upsertPlayer(schoolId!, values),
     onSuccess: () => {
       toast.success("Jugador guardado");
       setCreating(false);
@@ -273,7 +274,7 @@ function PlayerDialog({
   teams: { id: string; name: string }[];
   pending: boolean;
   onClose: () => void;
-  onSave: (values: Partial<Player>) => void;
+  onSave: (values: Draft<Player>) => void;
 }) {
   const [categoryId, setCategoryId] = useState<string>("");
   const [teamId, setTeamId] = useState<string>("");

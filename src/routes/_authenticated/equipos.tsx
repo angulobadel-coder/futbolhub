@@ -14,6 +14,7 @@ import {
   listTeams,
   removeRow,
   upsertTeam,
+  type Draft,
 } from "@/lib/api/school-data";
 import type { Team } from "@/lib/api/client";
 import { PageHeader } from "@/components/common/page-header";
@@ -85,7 +86,7 @@ function TeamsPage() {
   });
 
   const saveMutation = useMutation({
-    mutationFn: (values: Partial<Team> & { id?: string }) => upsertTeam(schoolId!, values),
+    mutationFn: (values: Draft<Team>) => upsertTeam(schoolId!, values),
     onSuccess: () => {
       toast.success("Equipo guardado");
       setCreating(false);
@@ -230,7 +231,7 @@ function TeamDialog({
   coaches: { id: string; full_name: string }[];
   pending: boolean;
   onClose: () => void;
-  onSave: (values: Partial<Team>) => void;
+  onSave: (values: Draft<Team>) => void;
 }) {
   const [categoryId, setCategoryId] = useState("");
   const [coachId, setCoachId] = useState("");
