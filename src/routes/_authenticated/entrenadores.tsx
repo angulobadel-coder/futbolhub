@@ -14,7 +14,6 @@ import {
   upsertCoach,
   type Draft,
 } from "@/lib/api/school-data";
-} from "@/lib/api/school-data";
 import type { Coach } from "@/lib/api/client";
 import { PageHeader } from "@/components/common/page-header";
 import { EmptyState, ErrorState, LoadingRows } from "@/components/common/states";
