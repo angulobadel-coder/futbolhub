@@ -13,6 +13,7 @@ import {
   listTeams,
   removeRow,
   upsertCategory,
+  type Draft,
 } from "@/lib/api/school-data";
 import type { Category } from "@/lib/api/client";
 import { PageHeader } from "@/components/common/page-header";
@@ -73,7 +74,7 @@ function CategoriesPage() {
   });
 
   const saveMutation = useMutation({
-    mutationFn: (values: Partial<Category> & { id?: string }) => upsertCategory(schoolId!, values),
+    mutationFn: (values: Draft<Category>) => upsertCategory(schoolId!, values),
     onSuccess: () => {
       toast.success("Categoría guardada");
       setCreating(false);
@@ -189,7 +190,7 @@ function CategoryDialog({
   category: Category | null;
   pending: boolean;
   onClose: () => void;
-  onSave: (values: Partial<Category>) => void;
+  onSave: (values: Draft<Category>) => void;
 }) {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
