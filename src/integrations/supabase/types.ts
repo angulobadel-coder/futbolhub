@@ -14,6 +14,58 @@ export type Database = {
   }
   public: {
     Tables: {
+      attendance: {
+        Row: {
+          id: string
+          note: string | null
+          player_id: string
+          recorded_at: string
+          school_id: string
+          session_id: string
+          status: Database["public"]["Enums"]["attendance_status"]
+        }
+        Insert: {
+          id?: string
+          note?: string | null
+          player_id: string
+          recorded_at?: string
+          school_id: string
+          session_id: string
+          status?: Database["public"]["Enums"]["attendance_status"]
+        }
+        Update: {
+          id?: string
+          note?: string | null
+          player_id?: string
+          recorded_at?: string
+          school_id?: string
+          session_id?: string
+          status?: Database["public"]["Enums"]["attendance_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "training_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categories: {
         Row: {
           created_at: string
@@ -92,6 +144,83 @@ export type Database = {
             columns: ["school_id"]
             isOneToOne: false
             referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          end_time: string | null
+          event_date: string
+          id: string
+          location: string | null
+          notes: string | null
+          school_id: string
+          session_id: string | null
+          start_time: string | null
+          team_id: string | null
+          title: string
+          type: Database["public"]["Enums"]["event_type"]
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          end_time?: string | null
+          event_date: string
+          id?: string
+          location?: string | null
+          notes?: string | null
+          school_id: string
+          session_id?: string | null
+          start_time?: string | null
+          team_id?: string | null
+          title: string
+          type?: Database["public"]["Enums"]["event_type"]
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          end_time?: string | null
+          event_date?: string
+          id?: string
+          location?: string | null
+          notes?: string | null
+          school_id?: string
+          session_id?: string | null
+          start_time?: string | null
+          team_id?: string | null
+          title?: string
+          type?: Database["public"]["Enums"]["event_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "training_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
             referencedColumns: ["id"]
           },
         ]
@@ -287,6 +416,83 @@ export type Database = {
           },
         ]
       }
+      training_sessions: {
+        Row: {
+          category_id: string | null
+          coach_id: string | null
+          created_at: string
+          description: string | null
+          end_time: string | null
+          id: string
+          location: string | null
+          objective: string | null
+          school_id: string
+          session_date: string
+          start_time: string
+          status: Database["public"]["Enums"]["training_status"]
+          team_id: string | null
+        }
+        Insert: {
+          category_id?: string | null
+          coach_id?: string | null
+          created_at?: string
+          description?: string | null
+          end_time?: string | null
+          id?: string
+          location?: string | null
+          objective?: string | null
+          school_id: string
+          session_date: string
+          start_time: string
+          status?: Database["public"]["Enums"]["training_status"]
+          team_id?: string | null
+        }
+        Update: {
+          category_id?: string | null
+          coach_id?: string | null
+          created_at?: string
+          description?: string | null
+          end_time?: string | null
+          id?: string
+          location?: string | null
+          objective?: string | null
+          school_id?: string
+          session_date?: string
+          start_time?: string
+          status?: Database["public"]["Enums"]["training_status"]
+          team_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "training_sessions_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_sessions_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coaches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_sessions_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_sessions_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -333,11 +539,15 @@ export type Database = {
         Returns: boolean
       }
       is_school_member: { Args: { _school_id: string }; Returns: boolean }
+      is_session_coach: { Args: { _coach_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "superadmin" | "director" | "coach" | "guardian" | "player"
+      attendance_status: "presente" | "ausente" | "justificado"
       coach_status: "activo" | "inactivo"
+      event_type: "entrenamiento" | "partido" | "torneo" | "reunion" | "otro"
       player_status: "activo" | "inactivo" | "suspendido" | "retirado"
+      training_status: "programado" | "realizado" | "cancelado"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -466,8 +676,11 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["superadmin", "director", "coach", "guardian", "player"],
+      attendance_status: ["presente", "ausente", "justificado"],
       coach_status: ["activo", "inactivo"],
+      event_type: ["entrenamiento", "partido", "torneo", "reunion", "otro"],
       player_status: ["activo", "inactivo", "suspendido", "retirado"],
+      training_status: ["programado", "realizado", "cancelado"],
     },
   },
 } as const
