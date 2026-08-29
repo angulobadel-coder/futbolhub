@@ -31,38 +31,40 @@ export async function listPlayers(schoolId: string): Promise<Player[]> {
 /** Valores parciales aceptados por los formularios (permite undefined y null). */
 export type Draft<T> = { [K in keyof T]?: T[K] | undefined } & { id?: string | undefined };
 
-type Insert<T> = Omit<T, "id" | "created_at">;
-
-export async function upsertPlayer(schoolId: string, values: Draft<Player>) {
-  const payload = { ...values, school_id: schoolId };
-  if (values.id) {
-    return unwrap(await supabase.from("players").update(payload).eq("id", values.id).select().single());
+/** Elimina claves con `undefined` para no chocar con los tipos generados. */
+function clean(values: Record<string, unknown>, schoolId: string) {
+  const out: Record<string, unknown> = { school_id: schoolId };
+  for (const [key, value] of Object.entries(values)) {
+    if (value !== undefined && key !== "id") out[key] = value;
   }
-  return unwrap(await supabase.from("players").insert(payload as Insert<Player>).select().single());
+  return out;
 }
 
-export async function upsertCoach(schoolId: string, values: Draft<Coach>) {
-  const payload = { ...values, school_id: schoolId };
-  if (values.id) {
-    return unwrap(await supabase.from("coaches").update(payload).eq("id", values.id).select().single());
-  }
-  return unwrap(await supabase.from("coaches").insert(payload as Insert<Coach>).select().single());
+type Table = "players" | "coaches" | "categories" | "teams";
+
+async function upsertRow(table: Table, schoolId: string, values: Record<string, unknown>) {
+  const payload = clean(values, schoolId);
+  const id = values.id as string | undefined;
+  const query = id
+    ? supabase.from(table).update(payload as never).eq("id", id)
+    : supabase.from(table).insert(payload as never);
+  return unwrap(await query.select().single());
 }
 
-export async function upsertCategory(schoolId: string, values: Draft<Category>) {
-  const payload = { ...values, school_id: schoolId };
-  if (values.id) {
-    return unwrap(await supabase.from("categories").update(payload).eq("id", values.id).select().single());
-  }
-  return unwrap(await supabase.from("categories").insert(payload as Insert<Category>).select().single());
+export function upsertPlayer(schoolId: string, values: Draft<Player>) {
+  return upsertRow("players", schoolId, values);
 }
 
-export async function upsertTeam(schoolId: string, values: Draft<Team>) {
-  const payload = { ...values, school_id: schoolId };
-  if (values.id) {
-    return unwrap(await supabase.from("teams").update(payload).eq("id", values.id).select().single());
-  }
-  return unwrap(await supabase.from("teams").insert(payload as Insert<Team>).select().single());
+export function upsertCoach(schoolId: string, values: Draft<Coach>) {
+  return upsertRow("coaches", schoolId, values);
+}
+
+export function upsertCategory(schoolId: string, values: Draft<Category>) {
+  return upsertRow("categories", schoolId, values);
+}
+
+export function upsertTeam(schoolId: string, values: Draft<Team>) {
+  return upsertRow("teams", schoolId, values);
 }
 
 export async function removeRow(
