@@ -44,7 +44,7 @@ type Table = "players" | "coaches" | "categories" | "teams";
 
 async function upsertRow(table: Table, schoolId: string, values: Record<string, unknown>) {
   const payload = clean(values, schoolId);
-  const id = values.id as string | undefined;
+  const id = values["id"] as string | undefined;
   const query = id
     ? supabase.from(table).update(payload as never).eq("id", id)
     : supabase.from(table).insert(payload as never);
