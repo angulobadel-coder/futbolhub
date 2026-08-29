@@ -1,29 +1,69 @@
-# Welcome to your Lovable project
+# FútbolGestión
 
-This project was built with [Lovable](https://lovable.dev).
+Plataforma web multi-escuela para la gestión integral de escuelas de fútbol.
 
-## Build with Lovable
+## Estado actual (etapa 1 — núcleo)
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+Implementado y conectado a base de datos persistente:
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+- Landing page pública.
+- Autenticación por correo y contraseña (confirmación automática).
+- Roles por escuela: `superadmin`, `director`, `coach`, `guardian`, `player`.
+- Multi-tenant con aislamiento de datos por escuela (Row Level Security).
+- Selector de escuela y navegación por rol.
+- Dashboard con indicadores y alertas basadas en reglas.
+- Módulos CRUD: jugadores, entrenadores, categorías, equipos.
+- Escuela demo: **Academia Fútbol Futuro** con datos ficticios.
 
-## Development
+Los módulos de entrenamientos, asistencia, calendario, partidos, torneos,
+estadísticas, evaluaciones, pagos, comunicaciones, notificaciones y reportes
+aparecen en la navegación marcados como *pronto*; no simulan funcionalidad.
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+## Arquitectura
 
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+```
+src/
+  routes/                 Rutas (TanStack Router, file-based)
+    index.tsx             Landing pública
+    auth.tsx              Login / registro
+    _authenticated/       Subárbol protegido (gate de sesión)
+  components/
+    layout/app-shell.tsx  Sidebar + shell de la app
+    common/               Estados, encabezados, tarjetas de indicador
+    ui/                   Primitivas shadcn
+  lib/
+    api/client.ts         Cliente de datos y tipos
+    api/tenancy.ts        Membresías, roles y permisos
+    api/school-data.ts    Acceso a datos por escuela (lectura/escritura)
+    rules/alerts.ts       Motor de reglas de alertas (modular, ampliable)
+    tenant.tsx            Contexto de escuela activa
 ```
 
-## Built with
+Separación: presentación (`components`, `routes`) · lógica de negocio
+(`lib/rules`) · acceso a datos (`lib/api`) · autenticación (backend + gate de
+rutas).
 
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
+## Modelo de datos
+
+`schools`, `profiles`, `user_roles`, `categories`, `coaches`, `teams`,
+`players`. Toda entidad deportiva referencia `school_id`. Las políticas de
+acceso usan funciones `is_school_member` y `can_manage_school`.
+
+## Desarrollo
+
+```bash
+bun install
+bun run dev
+```
+
+Las credenciales del backend se inyectan por variables de entorno
+(`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`); no hay claves secretas
+en el frontend.
+
+## Próximos pasos
+
+1. Entrenamientos + asistencia (con reglas de baja asistencia).
+2. Calendario y partidos.
+3. Evaluaciones y estadísticas.
+4. Pagos y automatización de vencimientos.
+5. Comunicaciones, notificaciones y reportes.
