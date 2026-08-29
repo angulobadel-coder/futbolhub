@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
@@ -236,10 +236,11 @@ function TeamDialog({
   const [categoryId, setCategoryId] = useState("");
   const [coachId, setCoachId] = useState("");
 
-  if (open && team && categoryId === "" && coachId === "") {
-    setCategoryId(team.category_id ?? "");
-    setCoachId(team.coach_id ?? "");
-  }
+  useEffect(() => {
+    if (!open) return;
+    setCategoryId(team?.category_id ?? "");
+    setCoachId(team?.coach_id ?? "");
+  }, [open, team]);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();

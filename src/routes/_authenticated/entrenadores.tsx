@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus, Search } from "lucide-react";
@@ -228,7 +228,11 @@ function CoachDialog({
   onClose: () => void;
   onSave: (values: Draft<Coach>) => void;
 }) {
-  const [status, setStatus] = useState<Coach["status"]>(coach?.status ?? "activo");
+  const [status, setStatus] = useState<Coach["status"]>("activo");
+
+  useEffect(() => {
+    if (open) setStatus(coach?.status ?? "activo");
+  }, [open, coach]);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();

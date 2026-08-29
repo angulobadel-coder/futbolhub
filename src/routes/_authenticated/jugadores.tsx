@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus, Search } from "lucide-react";
@@ -281,11 +281,12 @@ function PlayerDialog({
   const [status, setStatus] = useState<PlayerStatus>("activo");
 
   // Sincronizar selección al abrir
-  if (open && player && categoryId === "" && teamId === "") {
-    setCategoryId(player.category_id ?? "");
-    setTeamId(player.team_id ?? "");
-    setStatus(player.status);
-  }
+  useEffect(() => {
+    if (!open) return;
+    setCategoryId(player?.category_id ?? "");
+    setTeamId(player?.team_id ?? "");
+    setStatus(player?.status ?? "activo");
+  }, [open, player]);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
