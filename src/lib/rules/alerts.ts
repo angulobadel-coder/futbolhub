@@ -21,6 +21,8 @@ export interface SchoolSnapshot {
   coaches: Coach[];
   categories: Category[];
   teams: Team[];
+  sessions?: TrainingSession[];
+  attendance?: Attendance[];
 }
 
 type Rule = (snapshot: SchoolSnapshot) => SchoolAlert[];
