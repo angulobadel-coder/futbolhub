@@ -1,4 +1,10 @@
 import type { Category, Coach, Player, Team } from "@/lib/api/client";
+import type { Attendance, TrainingSession } from "@/lib/api/training";
+import {
+  computeAttendance,
+  LOW_ATTENDANCE_THRESHOLD,
+  lowAttendancePlayers,
+} from "@/lib/rules/attendance";
 
 export type AlertLevel = "info" | "warning" | "critical";
 
@@ -15,6 +21,8 @@ export interface SchoolSnapshot {
   coaches: Coach[];
   categories: Category[];
   teams: Team[];
+  sessions?: TrainingSession[];
+  attendance?: Attendance[];
 }
 
 type Rule = (snapshot: SchoolSnapshot) => SchoolAlert[];
@@ -88,6 +96,20 @@ const rules: Rule[] = [
         recommendation: "Evaluar convocatoria o desactivar temporalmente la categoría.",
       },
     ];
+  },
+  ({ players, sessions, attendance }) => {
+    // Sin datos suficientes no se genera ninguna alerta.
+    if (!sessions?.length || !attendance?.length) return [];
+    const stats = computeAttendance(attendance, sessions);
+    const low = lowAttendancePlayers(stats, players);
+    if (low.length === 0) return [];
+    return low.map(({ player, stat }) => ({
+      id: `asistencia-baja-${player.id}`,
+      level: "warning" as const,
+      title: `${player.full_name}: asistencia del ${stat.percentage}%`,
+      detail: `${stat.present} de ${stat.registered} entrenamientos con asistencia registrada.`,
+      recommendation: `Se detectó una asistencia inferior al ${LOW_ATTENDANCE_THRESHOLD}%. Se recomienda realizar seguimiento.`,
+    }));
   },
 ];
 
