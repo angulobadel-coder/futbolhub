@@ -97,6 +97,20 @@ const rules: Rule[] = [
       },
     ];
   },
+  ({ players, sessions, attendance }) => {
+    // Sin datos suficientes no se genera ninguna alerta.
+    if (!sessions?.length || !attendance?.length) return [];
+    const stats = computeAttendance(attendance, sessions);
+    const low = lowAttendancePlayers(stats, players);
+    if (low.length === 0) return [];
+    return low.map(({ player, stat }) => ({
+      id: `asistencia-baja-${player.id}`,
+      level: "warning" as const,
+      title: `${player.full_name}: asistencia del ${stat.percentage}%`,
+      detail: `${stat.present} de ${stat.registered} entrenamientos con asistencia registrada.`,
+      recommendation: `Se detectó una asistencia inferior al ${LOW_ATTENDANCE_THRESHOLD}%. Se recomienda realizar seguimiento.`,
+    }));
+  },
 ];
 
 export function evaluateAlerts(snapshot: SchoolSnapshot): SchoolAlert[] {
