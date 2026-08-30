@@ -1,4 +1,10 @@
 import type { Category, Coach, Player, Team } from "@/lib/api/client";
+import type { Attendance, TrainingSession } from "@/lib/api/training";
+import {
+  computeAttendance,
+  LOW_ATTENDANCE_THRESHOLD,
+  lowAttendancePlayers,
+} from "@/lib/rules/attendance";
 
 export type AlertLevel = "info" | "warning" | "critical";
 
