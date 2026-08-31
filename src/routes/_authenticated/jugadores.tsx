@@ -103,6 +103,21 @@ function PlayersPage() {
     enabled: !!schoolId,
     queryFn: () => listTeams(schoolId!),
   });
+  const sessionsQuery = useQuery({
+    queryKey: ["training-sessions", schoolId],
+    enabled: !!schoolId,
+    queryFn: () => listTrainingSessions(schoolId!),
+  });
+  const attendanceQuery = useQuery({
+    queryKey: ["attendance", schoolId],
+    enabled: !!schoolId,
+    queryFn: () => listAttendance(schoolId!),
+  });
+
+  const attendanceStats = useMemo(
+    () => computeAttendance(attendanceQuery.data ?? [], sessionsQuery.data ?? []),
+    [attendanceQuery.data, sessionsQuery.data],
+  );
 
   const saveMutation = useMutation({
     mutationFn: (values: Draft<Player>) => upsertPlayer(schoolId!, values),
