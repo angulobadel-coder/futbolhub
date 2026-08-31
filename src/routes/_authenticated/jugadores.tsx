@@ -228,6 +228,20 @@ function PlayersPage() {
                     {teams.find((t) => t.id === player.team_id)?.name ?? "—"}
                   </TableCell>
                   <TableCell className="hidden lg:table-cell">{player.position ?? "—"}</TableCell>
+                  <TableCell className="hidden lg:table-cell">
+                    {(() => {
+                      const stat = attendanceStats.get(player.id);
+                      if (!stat || stat.registered === 0) return "—";
+                      return (
+                        <span className={stat.percentage < 70 ? "text-warning" : undefined}>
+                          {stat.percentage}%{" "}
+                          <span className="text-xs text-muted-foreground">
+                            ({stat.present}/{stat.registered})
+                          </span>
+                        </span>
+                      );
+                    })()}
+                  </TableCell>
                   <TableCell>
                     <Badge
                       variant={player.status === "activo" ? "default" : "secondary"}
