@@ -98,6 +98,28 @@ function DashboardPage() {
         <StatCard label="Equipos" value={teams.length} icon={Trophy} />
       </section>
 
+      <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <StatCard
+          label="Próximos entrenamientos"
+          value={upcoming.length}
+          hint={upcoming[upcoming.length - 1] ? `Siguiente: ${upcoming[upcoming.length - 1]!.session_date}` : undefined}
+          icon={CalendarDays}
+        />
+        <StatCard label="Entrenamientos realizados" value={done.length} icon={ClipboardCheck} />
+        <StatCard
+          label="Asistencia promedio"
+          value={average === null ? "—" : `${average}%`}
+          hint={average === null ? "Sin registros de asistencia" : undefined}
+          icon={Percent}
+        />
+        <StatCard
+          label="Alertas de asistencia"
+          value={lowAttendance.length}
+          hint="Jugadores por debajo del 70%"
+          icon={TriangleAlert}
+        />
+      </section>
+
       <div className="grid gap-4 lg:grid-cols-2">
         <Card className="border-border/70 bg-card/80">
           <CardHeader>
