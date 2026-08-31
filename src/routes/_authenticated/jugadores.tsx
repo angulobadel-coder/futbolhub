@@ -212,6 +212,7 @@ function PlayersPage() {
                 <TableHead className="hidden md:table-cell">Categoría</TableHead>
                 <TableHead className="hidden md:table-cell">Equipo</TableHead>
                 <TableHead className="hidden lg:table-cell">Posición</TableHead>
+                <TableHead className="hidden lg:table-cell">Asistencia</TableHead>
                 <TableHead>Estado</TableHead>
                 {editable ? <TableHead className="text-right">Acciones</TableHead> : null}
               </TableRow>
