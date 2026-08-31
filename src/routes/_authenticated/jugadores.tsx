@@ -15,6 +15,8 @@ import {
   upsertPlayer,
   type Draft,
 } from "@/lib/api/school-data";
+import { listAttendance, listTrainingSessions } from "@/lib/api/training";
+import { computeAttendance } from "@/lib/rules/attendance";
 import type { Player, PlayerStatus } from "@/lib/api/client";
 import { PageHeader } from "@/components/common/page-header";
 import { EmptyState, ErrorState, LoadingRows } from "@/components/common/states";
