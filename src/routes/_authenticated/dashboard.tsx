@@ -30,20 +30,22 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 });
 
 function DashboardPage() {
-  const { school } = useTenant();
+  const { school, role, user } = useTenant();
   const schoolId = school?.id;
 
   const query = useQuery({
     queryKey: ["school-snapshot", schoolId],
     enabled: !!schoolId,
     queryFn: async () => {
-      const [players, coaches, categories, teams] = await Promise.all([
+      const [players, coaches, categories, teams, sessions, attendance] = await Promise.all([
         listPlayers(schoolId!),
         listCoaches(schoolId!),
         listCategories(schoolId!),
         listTeams(schoolId!),
+        listTrainingSessions(schoolId!),
+        listAttendance(schoolId!),
       ]);
-      return { players, coaches, categories, teams };
+      return { players, coaches, categories, teams, sessions, attendance };
     },
   });
 
@@ -51,9 +53,31 @@ function DashboardPage() {
   if (query.error) return <ErrorState message={query.error.message} />;
   if (!query.data) return null;
 
-  const { players, coaches, categories, teams } = query.data;
+  const { players, coaches, categories, teams, attendance } = query.data;
+  const scope = resolveScope({ role, userId: user?.id, coaches, teams, players });
+  const sessions = query.data.sessions.filter((s) => sessionInScope(s, scope));
+  const sessionIds = new Set(sessions.map((s) => s.id));
+  const scopedAttendance = attendance.filter((a) => sessionIds.has(a.session_id));
+  const scopedPlayers = scope.playerIds
+    ? players.filter((p) => scope.playerIds!.includes(p.id))
+    : players;
+
   const activePlayers = players.filter((p) => p.status === "activo");
-  const alerts = evaluateAlerts({ players, coaches, categories, teams });
+  const today = new Date().toISOString().slice(0, 10);
+  const upcoming = sessions.filter((s) => s.status === "programado" && s.session_date >= today);
+  const done = sessions.filter((s) => s.status === "realizado");
+  const stats = computeAttendance(scopedAttendance, sessions);
+  const average = averageAttendance(stats);
+  const lowAttendance = lowAttendancePlayers(stats, scopedPlayers);
+
+  const alerts = evaluateAlerts({
+    players: scopedPlayers,
+    coaches,
+    categories,
+    teams,
+    sessions,
+    attendance: scopedAttendance,
+  });
 
   return (
     <>
