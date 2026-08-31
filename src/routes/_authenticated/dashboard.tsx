@@ -1,9 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Shield, Trophy, UserRound, Users } from "lucide-react";
+import { CalendarDays, ClipboardCheck, Percent, Shield, TriangleAlert, Trophy, UserRound, Users } from "lucide-react";
 
 import { useTenant } from "@/lib/tenant";
 import { listCategories, listCoaches, listPlayers, listTeams } from "@/lib/api/school-data";
+import { listAttendance, listTrainingSessions } from "@/lib/api/training";
+import { resolveScope, sessionInScope } from "@/lib/api/scope";
+import { averageAttendance, computeAttendance, lowAttendancePlayers } from "@/lib/rules/attendance";
 import { evaluateAlerts } from "@/lib/rules/alerts";
 import { PageHeader } from "@/components/common/page-header";
 import { StatCard } from "@/components/common/stat-card";
@@ -27,20 +30,22 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 });
 
 function DashboardPage() {
-  const { school } = useTenant();
+  const { school, role, user } = useTenant();
   const schoolId = school?.id;
 
   const query = useQuery({
     queryKey: ["school-snapshot", schoolId],
     enabled: !!schoolId,
     queryFn: async () => {
-      const [players, coaches, categories, teams] = await Promise.all([
+      const [players, coaches, categories, teams, sessions, attendance] = await Promise.all([
         listPlayers(schoolId!),
         listCoaches(schoolId!),
         listCategories(schoolId!),
         listTeams(schoolId!),
+        listTrainingSessions(schoolId!),
+        listAttendance(schoolId!),
       ]);
-      return { players, coaches, categories, teams };
+      return { players, coaches, categories, teams, sessions, attendance };
     },
   });
 
@@ -48,9 +53,31 @@ function DashboardPage() {
   if (query.error) return <ErrorState message={query.error.message} />;
   if (!query.data) return null;
 
-  const { players, coaches, categories, teams } = query.data;
+  const { players, coaches, categories, teams, attendance } = query.data;
+  const scope = resolveScope({ role, userId: user?.id, coaches, teams, players });
+  const sessions = query.data.sessions.filter((s) => sessionInScope(s, scope));
+  const sessionIds = new Set(sessions.map((s) => s.id));
+  const scopedAttendance = attendance.filter((a) => sessionIds.has(a.session_id));
+  const scopedPlayers = scope.playerIds
+    ? players.filter((p) => scope.playerIds!.includes(p.id))
+    : players;
+
   const activePlayers = players.filter((p) => p.status === "activo");
-  const alerts = evaluateAlerts({ players, coaches, categories, teams });
+  const today = new Date().toISOString().slice(0, 10);
+  const upcoming = sessions.filter((s) => s.status === "programado" && s.session_date >= today);
+  const done = sessions.filter((s) => s.status === "realizado");
+  const stats = computeAttendance(scopedAttendance, sessions);
+  const average = averageAttendance(stats);
+  const lowAttendance = lowAttendancePlayers(stats, scopedPlayers);
+
+  const alerts = evaluateAlerts({
+    players: scopedPlayers,
+    coaches,
+    categories,
+    teams,
+    sessions,
+    attendance: scopedAttendance,
+  });
 
   return (
     <>
@@ -69,6 +96,28 @@ function DashboardPage() {
         <StatCard label="Entrenadores" value={coaches.filter((c) => c.status === "activo").length} icon={UserRound} />
         <StatCard label="Categorías" value={categories.length} icon={Shield} />
         <StatCard label="Equipos" value={teams.length} icon={Trophy} />
+      </section>
+
+      <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <StatCard
+          label="Próximos entrenamientos"
+          value={upcoming.length}
+          hint={upcoming[upcoming.length - 1] ? `Siguiente: ${upcoming[upcoming.length - 1]!.session_date}` : undefined}
+          icon={CalendarDays}
+        />
+        <StatCard label="Entrenamientos realizados" value={done.length} icon={ClipboardCheck} />
+        <StatCard
+          label="Asistencia promedio"
+          value={average === null ? "—" : `${average}%`}
+          hint={average === null ? "Sin registros de asistencia" : undefined}
+          icon={Percent}
+        />
+        <StatCard
+          label="Alertas de asistencia"
+          value={lowAttendance.length}
+          hint="Jugadores por debajo del 70%"
+          icon={TriangleAlert}
+        />
       </section>
 
       <div className="grid gap-4 lg:grid-cols-2">

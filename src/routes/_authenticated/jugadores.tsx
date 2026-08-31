@@ -15,6 +15,8 @@ import {
   upsertPlayer,
   type Draft,
 } from "@/lib/api/school-data";
+import { listAttendance, listTrainingSessions } from "@/lib/api/training";
+import { computeAttendance } from "@/lib/rules/attendance";
 import type { Player, PlayerStatus } from "@/lib/api/client";
 import { PageHeader } from "@/components/common/page-header";
 import { EmptyState, ErrorState, LoadingRows } from "@/components/common/states";
@@ -101,6 +103,21 @@ function PlayersPage() {
     enabled: !!schoolId,
     queryFn: () => listTeams(schoolId!),
   });
+  const sessionsQuery = useQuery({
+    queryKey: ["training-sessions", schoolId],
+    enabled: !!schoolId,
+    queryFn: () => listTrainingSessions(schoolId!),
+  });
+  const attendanceQuery = useQuery({
+    queryKey: ["attendance", schoolId],
+    enabled: !!schoolId,
+    queryFn: () => listAttendance(schoolId!),
+  });
+
+  const attendanceStats = useMemo(
+    () => computeAttendance(attendanceQuery.data ?? [], sessionsQuery.data ?? []),
+    [attendanceQuery.data, sessionsQuery.data],
+  );
 
   const saveMutation = useMutation({
     mutationFn: (values: Draft<Player>) => upsertPlayer(schoolId!, values),
@@ -195,6 +212,7 @@ function PlayersPage() {
                 <TableHead className="hidden md:table-cell">Categoría</TableHead>
                 <TableHead className="hidden md:table-cell">Equipo</TableHead>
                 <TableHead className="hidden lg:table-cell">Posición</TableHead>
+                <TableHead className="hidden lg:table-cell">Asistencia</TableHead>
                 <TableHead>Estado</TableHead>
                 {editable ? <TableHead className="text-right">Acciones</TableHead> : null}
               </TableRow>
@@ -210,6 +228,20 @@ function PlayersPage() {
                     {teams.find((t) => t.id === player.team_id)?.name ?? "—"}
                   </TableCell>
                   <TableCell className="hidden lg:table-cell">{player.position ?? "—"}</TableCell>
+                  <TableCell className="hidden lg:table-cell">
+                    {(() => {
+                      const stat = attendanceStats.get(player.id);
+                      if (!stat || stat.registered === 0) return "—";
+                      return (
+                        <span className={stat.percentage < 70 ? "text-warning" : undefined}>
+                          {stat.percentage}%{" "}
+                          <span className="text-xs text-muted-foreground">
+                            ({stat.present}/{stat.registered})
+                          </span>
+                        </span>
+                      );
+                    })()}
+                  </TableCell>
                   <TableCell>
                     <Badge
                       variant={player.status === "activo" ? "default" : "secondary"}
