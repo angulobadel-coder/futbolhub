@@ -1,9 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Shield, Trophy, UserRound, Users } from "lucide-react";
+import { CalendarDays, ClipboardCheck, Percent, Shield, TriangleAlert, Trophy, UserRound, Users } from "lucide-react";
 
 import { useTenant } from "@/lib/tenant";
 import { listCategories, listCoaches, listPlayers, listTeams } from "@/lib/api/school-data";
+import { listAttendance, listTrainingSessions } from "@/lib/api/training";
+import { resolveScope, sessionInScope } from "@/lib/api/scope";
+import { averageAttendance, computeAttendance, lowAttendancePlayers } from "@/lib/rules/attendance";
 import { evaluateAlerts } from "@/lib/rules/alerts";
 import { PageHeader } from "@/components/common/page-header";
 import { StatCard } from "@/components/common/stat-card";
