@@ -3,17 +3,21 @@ import { useQuery } from "@tanstack/react-query";
 import type { User } from "@supabase/supabase-js";
 
 import { supabase } from "@/integrations/supabase/client";
-import { fetchMemberships, type Membership } from "@/lib/api/tenancy";
+import { fetchTenancy, type Membership } from "@/lib/api/tenancy";
 import type { AppRole, School } from "@/lib/api/client";
 
 const STORAGE_KEY = "fg.selected-school";
 
 interface TenantValue {
   user: User | null;
+  isSuperadmin: boolean;
   memberships: Membership[];
   school: School | null;
+  /** Rol efectivo en la escuela activa (o superadmin en modo global). */
   role: AppRole | undefined;
   selectSchool: (id: string) => void;
+  /** Vuelve al panel global (solo superadministrador). */
+  clearSchool: () => void;
   isLoading: boolean;
   error: Error | null;
 }
@@ -30,28 +34,41 @@ export function TenantProvider({ children }: { children: ReactNode }) {
     supabase.auth.getUser().then(({ data }) => setUser(data.user ?? null));
   }, []);
 
-  const membershipsQuery = useQuery({
-    queryKey: ["memberships"],
-    queryFn: fetchMemberships,
+  const tenancyQuery = useQuery({
+    queryKey: ["tenancy"],
+    queryFn: fetchTenancy,
   });
 
-  const memberships = membershipsQuery.data ?? [];
+  const isSuperadmin = tenancyQuery.data?.isSuperadmin ?? false;
+  const memberships = useMemo(
+    () => tenancyQuery.data?.memberships ?? [],
+    [tenancyQuery.data],
+  );
+
   const active = useMemo(() => {
     if (memberships.length === 0) return null;
-    return memberships.find((m) => m.school.id === selectedId) ?? memberships[0];
-  }, [memberships, selectedId]);
+    const found = memberships.find((m) => m.school.id === selectedId);
+    if (found) return found;
+    // El superadministrador arranca en el panel global, sin escuela activa.
+    return isSuperadmin ? null : (memberships[0] ?? null);
+  }, [memberships, selectedId, isSuperadmin]);
 
   const value: TenantValue = {
     user,
+    isSuperadmin,
     memberships,
     school: active?.school ?? null,
-    role: active?.role,
+    role: isSuperadmin ? "superadmin" : active?.role,
     selectSchool: (id) => {
       setSelectedId(id);
       window.localStorage.setItem(STORAGE_KEY, id);
     },
-    isLoading: membershipsQuery.isLoading,
-    error: (membershipsQuery.error as Error) ?? null,
+    clearSchool: () => {
+      setSelectedId(null);
+      window.localStorage.removeItem(STORAGE_KEY);
+    },
+    isLoading: tenancyQuery.isLoading,
+    error: (tenancyQuery.error as Error) ?? null,
   };
 
   return <TenantContext.Provider value={value}>{children}</TenantContext.Provider>;
