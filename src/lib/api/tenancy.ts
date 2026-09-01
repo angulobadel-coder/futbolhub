@@ -5,31 +5,70 @@ export interface Membership {
   school: School;
 }
 
-/** Devuelve las escuelas a las que pertenece el usuario autenticado. */
-export async function fetchMemberships(): Promise<Membership[]> {
-  const rows = unwrap(
-    await supabase
-      .from("user_roles")
-      .select("role, schools:school_id(*)")
-      .not("school_id", "is", null),
-  );
+export interface TenancyResult {
+  isSuperadmin: boolean;
+  memberships: Membership[];
+}
 
-  return (rows ?? [])
-    .filter((row) => row.schools)
-    .map((row) => ({ role: row.role as AppRole, school: row.schools as unknown as School }));
+/** Prioridad cuando un usuario tiene varios roles en la misma escuela. */
+const ROLE_WEIGHT: Record<AppRole, number> = {
+  superadmin: 5,
+  director: 4,
+  coach: 3,
+  guardian: 2,
+  player: 1,
+};
+
+/** Devuelve las escuelas y el rol efectivo del usuario autenticado. */
+export async function fetchTenancy(): Promise<TenancyResult> {
+  const roles =
+    unwrap(await supabase.from("user_roles").select("role, school_id")) ?? [];
+
+  const isSuperadmin = roles.some((r) => r.role === "superadmin");
+
+  if (isSuperadmin) {
+    const schools = unwrap(await supabase.from("schools").select("*").order("name")) ?? [];
+    return {
+      isSuperadmin: true,
+      memberships: schools.map((school) => ({ role: "superadmin" as AppRole, school })),
+    };
+  }
+
+  const ids = [...new Set(roles.map((r) => r.school_id).filter((v): v is string => !!v))];
+  if (ids.length === 0) return { isSuperadmin: false, memberships: [] };
+
+  const schools =
+    unwrap(await supabase.from("schools").select("*").in("id", ids).order("name")) ?? [];
+
+  return {
+    isSuperadmin: false,
+    memberships: schools.map((school) => {
+      const best = roles
+        .filter((r) => r.school_id === school.id)
+        .sort((a, b) => ROLE_WEIGHT[b.role as AppRole] - ROLE_WEIGHT[a.role as AppRole])[0];
+      return { role: (best?.role ?? "player") as AppRole, school };
+    }),
+  };
 }
 
 export async function fetchProfile(userId: string) {
-  return unwrap(
-    await supabase.from("profiles").select("*").eq("id", userId).maybeSingle(),
-  );
+  return unwrap(await supabase.from("profiles").select("*").eq("id", userId).maybeSingle());
+}
+
+/** Rol principal del usuario, sin depender de una escuela seleccionada. */
+export async function fetchPrimaryRole(): Promise<AppRole | null> {
+  const roles = unwrap(await supabase.from("user_roles").select("role")) ?? [];
+  if (roles.length === 0) return null;
+  return roles
+    .map((r) => r.role as AppRole)
+    .sort((a, b) => ROLE_WEIGHT[b] - ROLE_WEIGHT[a])[0]!;
 }
 
 export const ROLE_LABELS: Record<AppRole, string> = {
   superadmin: "Superadministrador",
-  director: "Director de escuela",
+  director: "Administrador de escuela",
   coach: "Entrenador",
-  guardian: "Acudiente",
+  guardian: "Padre o acudiente",
   player: "Jugador",
 };
 
