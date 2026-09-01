@@ -225,6 +225,48 @@ export type Database = {
           },
         ]
       }
+      player_guardians: {
+        Row: {
+          created_at: string
+          id: string
+          player_id: string
+          relationship: string | null
+          school_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          player_id: string
+          relationship?: string | null
+          school_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          player_id?: string
+          relationship?: string | null
+          school_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "player_guardians_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "player_guardians_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       players: {
         Row: {
           birth_date: string | null
@@ -531,6 +573,10 @@ export type Database = {
     }
     Functions: {
       can_manage_school: { Args: { _school_id: string }; Returns: boolean }
+      can_view_player: {
+        Args: { _player_id: string; _school_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -538,8 +584,11 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_player_guardian: { Args: { _player_id: string }; Returns: boolean }
       is_school_member: { Args: { _school_id: string }; Returns: boolean }
+      is_school_staff: { Args: { _school_id: string }; Returns: boolean }
       is_session_coach: { Args: { _coach_id: string }; Returns: boolean }
+      is_superadmin: { Args: never; Returns: boolean }
     }
     Enums: {
       app_role: "superadmin" | "director" | "coach" | "guardian" | "player"
