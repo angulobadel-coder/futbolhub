@@ -12,13 +12,17 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedAcudienteRouteImport } from './routes/_authenticated/acudiente'
 import { Route as AuthenticatedCalendarioRouteImport } from './routes/_authenticated/calendario'
 import { Route as AuthenticatedCategoriasRouteImport } from './routes/_authenticated/categorias'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedEntrenadorRouteImport } from './routes/_authenticated/entrenador'
 import { Route as AuthenticatedEntrenadoresRouteImport } from './routes/_authenticated/entrenadores'
 import { Route as AuthenticatedEntrenamientosRouteImport } from './routes/_authenticated/entrenamientos'
 import { Route as AuthenticatedEquiposRouteImport } from './routes/_authenticated/equipos'
+import { Route as AuthenticatedJugadorRouteImport } from './routes/_authenticated/jugador'
 import { Route as AuthenticatedJugadoresRouteImport } from './routes/_authenticated/jugadores'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,6 +38,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAcudienteRoute = AuthenticatedAcudienteRouteImport.update({
+  id: '/acudiente',
+  path: '/acudiente',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedCalendarioRoute = AuthenticatedCalendarioRouteImport.update({
   id: '/calendario',
   path: '/calendario',
@@ -47,6 +56,11 @@ const AuthenticatedCategoriasRoute = AuthenticatedCategoriasRouteImport.update({
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedEntrenadorRoute = AuthenticatedEntrenadorRouteImport.update({
+  id: '/entrenador',
+  path: '/entrenador',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedEntrenadoresRoute =
@@ -66,82 +80,116 @@ const AuthenticatedEquiposRoute = AuthenticatedEquiposRouteImport.update({
   path: '/equipos',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedJugadorRoute = AuthenticatedJugadorRouteImport.update({
+  id: '/jugador',
+  path: '/jugador',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedJugadoresRoute = AuthenticatedJugadoresRouteImport.update({
   id: '/jugadores',
   path: '/jugadores',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/acudiente': typeof AuthenticatedAcudienteRoute
   '/calendario': typeof AuthenticatedCalendarioRoute
   '/categorias': typeof AuthenticatedCategoriasRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/entrenador': typeof AuthenticatedEntrenadorRoute
   '/entrenadores': typeof AuthenticatedEntrenadoresRoute
   '/entrenamientos': typeof AuthenticatedEntrenamientosRoute
   '/equipos': typeof AuthenticatedEquiposRoute
+  '/jugador': typeof AuthenticatedJugadorRoute
   '/jugadores': typeof AuthenticatedJugadoresRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/acudiente': typeof AuthenticatedAcudienteRoute
   '/calendario': typeof AuthenticatedCalendarioRoute
   '/categorias': typeof AuthenticatedCategoriasRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/entrenador': typeof AuthenticatedEntrenadorRoute
   '/entrenadores': typeof AuthenticatedEntrenadoresRoute
   '/entrenamientos': typeof AuthenticatedEntrenamientosRoute
   '/equipos': typeof AuthenticatedEquiposRoute
+  '/jugador': typeof AuthenticatedJugadorRoute
   '/jugadores': typeof AuthenticatedJugadoresRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/acudiente': typeof AuthenticatedAcudienteRoute
   '/_authenticated/calendario': typeof AuthenticatedCalendarioRoute
   '/_authenticated/categorias': typeof AuthenticatedCategoriasRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/entrenador': typeof AuthenticatedEntrenadorRoute
   '/_authenticated/entrenadores': typeof AuthenticatedEntrenadoresRoute
   '/_authenticated/entrenamientos': typeof AuthenticatedEntrenamientosRoute
   '/_authenticated/equipos': typeof AuthenticatedEquiposRoute
+  '/_authenticated/jugador': typeof AuthenticatedJugadorRoute
   '/_authenticated/jugadores': typeof AuthenticatedJugadoresRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/auth'
+    | '/acudiente'
     | '/calendario'
     | '/categorias'
     | '/dashboard'
+    | '/entrenador'
     | '/entrenadores'
     | '/entrenamientos'
     | '/equipos'
+    | '/jugador'
     | '/jugadores'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
+    | '/acudiente'
     | '/calendario'
     | '/categorias'
     | '/dashboard'
+    | '/entrenador'
     | '/entrenadores'
     | '/entrenamientos'
     | '/equipos'
+    | '/jugador'
     | '/jugadores'
+    | '/admin'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/_authenticated/acudiente'
     | '/_authenticated/calendario'
     | '/_authenticated/categorias'
     | '/_authenticated/dashboard'
+    | '/_authenticated/entrenador'
     | '/_authenticated/entrenadores'
     | '/_authenticated/entrenamientos'
     | '/_authenticated/equipos'
+    | '/_authenticated/jugador'
     | '/_authenticated/jugadores'
+    | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -173,6 +221,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/acudiente': {
+      id: '/_authenticated/acudiente'
+      path: '/acudiente'
+      fullPath: '/acudiente'
+      preLoaderRoute: typeof AuthenticatedAcudienteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/calendario': {
       id: '/_authenticated/calendario'
       path: '/calendario'
@@ -192,6 +247,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/entrenador': {
+      id: '/_authenticated/entrenador'
+      path: '/entrenador'
+      fullPath: '/entrenador'
+      preLoaderRoute: typeof AuthenticatedEntrenadorRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/entrenadores': {
@@ -215,6 +277,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEquiposRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/jugador': {
+      id: '/_authenticated/jugador'
+      path: '/jugador'
+      fullPath: '/jugador'
+      preLoaderRoute: typeof AuthenticatedJugadorRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/jugadores': {
       id: '/_authenticated/jugadores'
       path: '/jugadores'
@@ -222,27 +291,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedJugadoresRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAcudienteRoute: typeof AuthenticatedAcudienteRoute
   AuthenticatedCalendarioRoute: typeof AuthenticatedCalendarioRoute
   AuthenticatedCategoriasRoute: typeof AuthenticatedCategoriasRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedEntrenadorRoute: typeof AuthenticatedEntrenadorRoute
   AuthenticatedEntrenadoresRoute: typeof AuthenticatedEntrenadoresRoute
   AuthenticatedEntrenamientosRoute: typeof AuthenticatedEntrenamientosRoute
   AuthenticatedEquiposRoute: typeof AuthenticatedEquiposRoute
+  AuthenticatedJugadorRoute: typeof AuthenticatedJugadorRoute
   AuthenticatedJugadoresRoute: typeof AuthenticatedJugadoresRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAcudienteRoute: AuthenticatedAcudienteRoute,
   AuthenticatedCalendarioRoute: AuthenticatedCalendarioRoute,
   AuthenticatedCategoriasRoute: AuthenticatedCategoriasRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedEntrenadorRoute: AuthenticatedEntrenadorRoute,
   AuthenticatedEntrenadoresRoute: AuthenticatedEntrenadoresRoute,
   AuthenticatedEntrenamientosRoute: AuthenticatedEntrenamientosRoute,
   AuthenticatedEquiposRoute: AuthenticatedEquiposRoute,
+  AuthenticatedJugadorRoute: AuthenticatedJugadorRoute,
   AuthenticatedJugadoresRoute: AuthenticatedJugadoresRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
