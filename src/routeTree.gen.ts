@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedAcudienteRouteImport } from './routes/_authenticated/acudiente'
 import { Route as AuthenticatedCalendarioRouteImport } from './routes/_authenticated/calendario'
 import { Route as AuthenticatedCategoriasRouteImport } from './routes/_authenticated/categorias'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -35,6 +36,11 @@ const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAcudienteRoute = AuthenticatedAcudienteRouteImport.update({
+  id: '/acudiente',
+  path: '/acudiente',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedCalendarioRoute = AuthenticatedCalendarioRouteImport.update({
   id: '/calendario',
@@ -87,6 +93,7 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/acudiente': typeof AuthenticatedAcudienteRoute
   '/calendario': typeof AuthenticatedCalendarioRoute
   '/categorias': typeof AuthenticatedCategoriasRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -100,6 +107,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/acudiente': typeof AuthenticatedAcudienteRoute
   '/calendario': typeof AuthenticatedCalendarioRoute
   '/categorias': typeof AuthenticatedCategoriasRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/acudiente': typeof AuthenticatedAcudienteRoute
   '/_authenticated/calendario': typeof AuthenticatedCalendarioRoute
   '/_authenticated/categorias': typeof AuthenticatedCategoriasRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/acudiente'
     | '/calendario'
     | '/categorias'
     | '/dashboard'
@@ -143,6 +153,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/acudiente'
     | '/calendario'
     | '/categorias'
     | '/dashboard'
@@ -157,6 +168,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/_authenticated/acudiente'
     | '/_authenticated/calendario'
     | '/_authenticated/categorias'
     | '/_authenticated/dashboard'
@@ -196,6 +208,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/acudiente': {
+      id: '/_authenticated/acudiente'
+      path: '/acudiente'
+      fullPath: '/acudiente'
+      preLoaderRoute: typeof AuthenticatedAcudienteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/calendario': {
       id: '/_authenticated/calendario'
@@ -264,6 +283,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAcudienteRoute: typeof AuthenticatedAcudienteRoute
   AuthenticatedCalendarioRoute: typeof AuthenticatedCalendarioRoute
   AuthenticatedCategoriasRoute: typeof AuthenticatedCategoriasRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
@@ -276,6 +296,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAcudienteRoute: AuthenticatedAcudienteRoute,
   AuthenticatedCalendarioRoute: AuthenticatedCalendarioRoute,
   AuthenticatedCategoriasRoute: AuthenticatedCategoriasRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
