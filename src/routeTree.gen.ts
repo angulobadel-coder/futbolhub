@@ -20,6 +20,7 @@ import { Route as AuthenticatedEntrenadorRouteImport } from './routes/_authentic
 import { Route as AuthenticatedEntrenadoresRouteImport } from './routes/_authenticated/entrenadores'
 import { Route as AuthenticatedEntrenamientosRouteImport } from './routes/_authenticated/entrenamientos'
 import { Route as AuthenticatedEquiposRouteImport } from './routes/_authenticated/equipos'
+import { Route as AuthenticatedJugadorRouteImport } from './routes/_authenticated/jugador'
 import { Route as AuthenticatedJugadoresRouteImport } from './routes/_authenticated/jugadores'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 
@@ -79,6 +80,11 @@ const AuthenticatedEquiposRoute = AuthenticatedEquiposRouteImport.update({
   path: '/equipos',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedJugadorRoute = AuthenticatedJugadorRouteImport.update({
+  id: '/jugador',
+  path: '/jugador',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedJugadoresRoute = AuthenticatedJugadoresRouteImport.update({
   id: '/jugadores',
   path: '/jugadores',
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/entrenadores': typeof AuthenticatedEntrenadoresRoute
   '/entrenamientos': typeof AuthenticatedEntrenamientosRoute
   '/equipos': typeof AuthenticatedEquiposRoute
+  '/jugador': typeof AuthenticatedJugadorRoute
   '/jugadores': typeof AuthenticatedJugadoresRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
 }
@@ -115,6 +122,7 @@ export interface FileRoutesByTo {
   '/entrenadores': typeof AuthenticatedEntrenadoresRoute
   '/entrenamientos': typeof AuthenticatedEntrenamientosRoute
   '/equipos': typeof AuthenticatedEquiposRoute
+  '/jugador': typeof AuthenticatedJugadorRoute
   '/jugadores': typeof AuthenticatedJugadoresRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
 }
@@ -131,6 +139,7 @@ export interface FileRoutesById {
   '/_authenticated/entrenadores': typeof AuthenticatedEntrenadoresRoute
   '/_authenticated/entrenamientos': typeof AuthenticatedEntrenamientosRoute
   '/_authenticated/equipos': typeof AuthenticatedEquiposRoute
+  '/_authenticated/jugador': typeof AuthenticatedJugadorRoute
   '/_authenticated/jugadores': typeof AuthenticatedJugadoresRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
@@ -147,6 +156,7 @@ export interface FileRouteTypes {
     | '/entrenadores'
     | '/entrenamientos'
     | '/equipos'
+    | '/jugador'
     | '/jugadores'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
     | '/entrenadores'
     | '/entrenamientos'
     | '/equipos'
+    | '/jugador'
     | '/jugadores'
     | '/admin'
   id:
@@ -176,6 +187,7 @@ export interface FileRouteTypes {
     | '/_authenticated/entrenadores'
     | '/_authenticated/entrenamientos'
     | '/_authenticated/equipos'
+    | '/_authenticated/jugador'
     | '/_authenticated/jugadores'
     | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
@@ -265,6 +277,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEquiposRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/jugador': {
+      id: '/_authenticated/jugador'
+      path: '/jugador'
+      fullPath: '/jugador'
+      preLoaderRoute: typeof AuthenticatedJugadorRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/jugadores': {
       id: '/_authenticated/jugadores'
       path: '/jugadores'
@@ -291,6 +310,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedEntrenadoresRoute: typeof AuthenticatedEntrenadoresRoute
   AuthenticatedEntrenamientosRoute: typeof AuthenticatedEntrenamientosRoute
   AuthenticatedEquiposRoute: typeof AuthenticatedEquiposRoute
+  AuthenticatedJugadorRoute: typeof AuthenticatedJugadorRoute
   AuthenticatedJugadoresRoute: typeof AuthenticatedJugadoresRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
@@ -304,6 +324,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedEntrenadoresRoute: AuthenticatedEntrenadoresRoute,
   AuthenticatedEntrenamientosRoute: AuthenticatedEntrenamientosRoute,
   AuthenticatedEquiposRoute: AuthenticatedEquiposRoute,
+  AuthenticatedJugadorRoute: AuthenticatedJugadorRoute,
   AuthenticatedJugadoresRoute: AuthenticatedJugadoresRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
