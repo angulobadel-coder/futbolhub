@@ -23,11 +23,13 @@ export const Route = createFileRoute("/auth")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
+  ssr: false,
   beforeLoad: async () => {
     const { data } = await supabase.auth.getUser();
     if (data.user) {
+      const role = await fetchPrimaryRole();
       const { redirect } = await import("@tanstack/react-router");
-      throw redirect({ to: "/dashboard" });
+      throw redirect({ to: role ? ROLE_HOME[role] : "/dashboard" });
     }
   },
   component: AuthPage,
