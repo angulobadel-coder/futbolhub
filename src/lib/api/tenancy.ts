@@ -19,10 +19,20 @@ const ROLE_WEIGHT: Record<AppRole, number> = {
   player: 1,
 };
 
+/** Roles del usuario autenticado (filtrados explícitamente por su propio id). */
+async function fetchOwnRoles() {
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) return [];
+  return (
+    unwrap(
+      await supabase.from("user_roles").select("role, school_id").eq("user_id", auth.user.id),
+    ) ?? []
+  );
+}
+
 /** Devuelve las escuelas y el rol efectivo del usuario autenticado. */
 export async function fetchTenancy(): Promise<TenancyResult> {
-  const roles =
-    unwrap(await supabase.from("user_roles").select("role, school_id")) ?? [];
+  const roles = await fetchOwnRoles();
 
   const isSuperadmin = roles.some((r) => r.role === "superadmin");
 

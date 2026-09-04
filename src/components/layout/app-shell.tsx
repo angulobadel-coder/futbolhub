@@ -3,11 +3,13 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   BarChart3,
   Bell,
+  Building2,
   CalendarDays,
   ClipboardCheck,
   CreditCard,
   Dumbbell,
   FileBarChart,
+  HeartHandshake,
   LayoutDashboard,
   LogOut,
   Megaphone,
@@ -35,9 +37,17 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useTenant } from "@/lib/tenant";
 import { ROLE_LABELS } from "@/lib/api/tenancy";
+import type { AppRole } from "@/lib/api/client";
 import { cn } from "@/lib/utils";
 
-const NAV = [
+interface NavItem {
+  to: string;
+  label: string;
+  icon: typeof Users;
+  ready: boolean;
+}
+
+const MANAGEMENT: NavItem[] = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, ready: true },
   { to: "/jugadores", label: "Jugadores", icon: Users, ready: true },
   { to: "/entrenadores", label: "Entrenadores", icon: UserRound, ready: true },
@@ -54,14 +64,52 @@ const NAV = [
   { to: "#", label: "Notificaciones", icon: Bell, ready: false },
   { to: "#", label: "Reportes", icon: FileBarChart, ready: false },
   { to: "#", label: "Configuración", icon: Settings, ready: false },
-] as const;
+];
+
+const COACH_NAV: NavItem[] = [
+  { to: "/entrenador", label: "Mi panel", icon: LayoutDashboard, ready: true },
+  { to: "/entrenamientos", label: "Entrenamientos", icon: Dumbbell, ready: true },
+  { to: "/entrenamientos", label: "Asistencia", icon: ClipboardCheck, ready: true },
+  { to: "/jugadores", label: "Mis jugadores", icon: Users, ready: true },
+  { to: "/equipos", label: "Mis equipos", icon: Trophy, ready: true },
+  { to: "/calendario", label: "Calendario", icon: CalendarDays, ready: true },
+  { to: "#", label: "Evaluaciones", icon: Star, ready: false },
+  { to: "#", label: "Estadísticas", icon: BarChart3, ready: false },
+];
+
+const GUARDIAN_NAV: NavItem[] = [
+  { to: "/acudiente", label: "Mis hijos", icon: HeartHandshake, ready: true },
+  { to: "#", label: "Pagos", icon: CreditCard, ready: false },
+  { to: "#", label: "Comunicaciones", icon: Megaphone, ready: false },
+];
+
+const PLAYER_NAV: NavItem[] = [
+  { to: "/jugador", label: "Mi portal", icon: Users, ready: true },
+  { to: "#", label: "Mis evaluaciones", icon: Star, ready: false },
+  { to: "#", label: "Mis estadísticas", icon: BarChart3, ready: false },
+];
+
+function navFor(role: AppRole | undefined, hasSchool: boolean): NavItem[] {
+  if (role === "superadmin") {
+    const base: NavItem[] = [
+      { to: "/admin", label: "Panel global", icon: Building2, ready: true },
+    ];
+    return hasSchool ? [...base, ...MANAGEMENT] : base;
+  }
+  if (role === "coach") return COACH_NAV;
+  if (role === "guardian") return GUARDIAN_NAV;
+  if (role === "player") return PLAYER_NAV;
+  return MANAGEMENT;
+}
 
 export function AppShell({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
-  const { school, role, memberships, selectSchool, user } = useTenant();
+  const { school, role, memberships, selectSchool, clearSchool, isSuperadmin, user } = useTenant();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  const nav = navFor(role, !!school);
 
   async function signOut() {
     await queryClient.cancelQueries();
@@ -79,7 +127,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         )}
       >
         <div className="flex items-center justify-between px-5 py-5">
-          <Link to="/dashboard" className="font-display text-lg font-semibold tracking-tight">
+          <Link to="/" className="font-display text-lg font-semibold tracking-tight">
             Fútbol<span className="text-primary">Gestión</span>
           </Link>
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setOpen(false)}>
@@ -88,25 +136,29 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
 
         <div className="px-4 pb-4">
-          <Select value={school?.id ?? ""} onValueChange={selectSchool}>
-            <SelectTrigger className="w-full bg-sidebar-accent text-left">
-              <SelectValue placeholder="Selecciona escuela" />
-            </SelectTrigger>
-            <SelectContent>
-              {memberships.map((m) => (
-                <SelectItem key={m.school.id} value={m.school.id}>
-                  {m.school.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {role ? (
-            <p className="mt-2 text-xs text-muted-foreground">{ROLE_LABELS[role]}</p>
-          ) : null}
+          {memberships.length > 1 || isSuperadmin ? (
+            <Select value={school?.id ?? ""} onValueChange={selectSchool}>
+              <SelectTrigger className="w-full bg-sidebar-accent text-left">
+                <SelectValue placeholder="Panel global" />
+              </SelectTrigger>
+              <SelectContent>
+                {memberships.map((m) => (
+                  <SelectItem key={m.school.id} value={m.school.id}>
+                    {m.school.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          ) : (
+            <p className="truncate rounded-md bg-sidebar-accent px-3 py-2 text-sm font-medium">
+              {school?.name ?? "Sin escuela"}
+            </p>
+          )}
+          {role ? <p className="mt-2 text-xs text-muted-foreground">{ROLE_LABELS[role]}</p> : null}
         </div>
 
         <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 pb-6">
-          {NAV.map((item) =>
+          {nav.map((item) =>
             item.ready ? (
               <Link
                 key={item.label}
@@ -160,6 +212,25 @@ export function AppShell({ children }: { children: ReactNode }) {
             Fútbol<span className="text-primary">Gestión</span>
           </span>
         </div>
+
+        {isSuperadmin && school ? (
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-primary/30 bg-primary/10 px-4 py-2 text-sm sm:px-6 lg:px-8">
+            <span>
+              Estás consultando la escuela <strong>{school.name}</strong> como superadministrador.
+            </span>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                clearSchool();
+                navigate({ to: "/admin" });
+              }}
+            >
+              Volver al panel global
+            </Button>
+          </div>
+        ) : null}
+
         <main className="mx-auto w-full max-w-6xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
           {children}
         </main>
