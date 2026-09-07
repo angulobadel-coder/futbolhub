@@ -67,7 +67,7 @@ export async function fetchProfile(userId: string) {
 
 /** Rol principal del usuario, sin depender de una escuela seleccionada. */
 export async function fetchPrimaryRole(): Promise<AppRole | null> {
-  const roles = unwrap(await supabase.from("user_roles").select("role")) ?? [];
+  const roles = await fetchOwnRoles();
   if (roles.length === 0) return null;
   return roles
     .map((r) => r.role as AppRole)
