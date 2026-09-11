@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as ActivarRouteImport } from './routes/activar'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedAcudienteRouteImport } from './routes/_authenticated/acudiente'
@@ -21,6 +22,7 @@ import { Route as AuthenticatedEntrenadorRouteImport } from './routes/_authentic
 import { Route as AuthenticatedEntrenadoresRouteImport } from './routes/_authenticated/entrenadores'
 import { Route as AuthenticatedEntrenamientosRouteImport } from './routes/_authenticated/entrenamientos'
 import { Route as AuthenticatedEquiposRouteImport } from './routes/_authenticated/equipos'
+import { Route as AuthenticatedInvitacionesRouteImport } from './routes/_authenticated/invitaciones'
 import { Route as AuthenticatedJugadorRouteImport } from './routes/_authenticated/jugador'
 import { Route as AuthenticatedJugadoresRouteImport } from './routes/_authenticated/jugadores'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
@@ -32,6 +34,11 @@ const IndexRoute = IndexRouteImport.update({
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ActivarRoute = ActivarRouteImport.update({
+  id: '/activar',
+  path: '/activar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -86,6 +93,12 @@ const AuthenticatedEquiposRoute = AuthenticatedEquiposRouteImport.update({
   path: '/equipos',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedInvitacionesRoute =
+  AuthenticatedInvitacionesRouteImport.update({
+    id: '/invitaciones',
+    path: '/invitaciones',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedJugadorRoute = AuthenticatedJugadorRouteImport.update({
   id: '/jugador',
   path: '/jugador',
@@ -104,6 +117,7 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/activar': typeof ActivarRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/acudiente': typeof AuthenticatedAcudienteRoute
@@ -114,12 +128,14 @@ export interface FileRoutesByFullPath {
   '/entrenadores': typeof AuthenticatedEntrenadoresRoute
   '/entrenamientos': typeof AuthenticatedEntrenamientosRoute
   '/equipos': typeof AuthenticatedEquiposRoute
+  '/invitaciones': typeof AuthenticatedInvitacionesRoute
   '/jugador': typeof AuthenticatedJugadorRoute
   '/jugadores': typeof AuthenticatedJugadoresRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/activar': typeof ActivarRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/acudiente': typeof AuthenticatedAcudienteRoute
@@ -130,6 +146,7 @@ export interface FileRoutesByTo {
   '/entrenadores': typeof AuthenticatedEntrenadoresRoute
   '/entrenamientos': typeof AuthenticatedEntrenamientosRoute
   '/equipos': typeof AuthenticatedEquiposRoute
+  '/invitaciones': typeof AuthenticatedInvitacionesRoute
   '/jugador': typeof AuthenticatedJugadorRoute
   '/jugadores': typeof AuthenticatedJugadoresRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
@@ -138,6 +155,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/activar': typeof ActivarRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/acudiente': typeof AuthenticatedAcudienteRoute
@@ -148,6 +166,7 @@ export interface FileRoutesById {
   '/_authenticated/entrenadores': typeof AuthenticatedEntrenadoresRoute
   '/_authenticated/entrenamientos': typeof AuthenticatedEntrenamientosRoute
   '/_authenticated/equipos': typeof AuthenticatedEquiposRoute
+  '/_authenticated/invitaciones': typeof AuthenticatedInvitacionesRoute
   '/_authenticated/jugador': typeof AuthenticatedJugadorRoute
   '/_authenticated/jugadores': typeof AuthenticatedJugadoresRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
@@ -156,6 +175,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/activar'
     | '/auth'
     | '/reset-password'
     | '/acudiente'
@@ -166,12 +186,14 @@ export interface FileRouteTypes {
     | '/entrenadores'
     | '/entrenamientos'
     | '/equipos'
+    | '/invitaciones'
     | '/jugador'
     | '/jugadores'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/activar'
     | '/auth'
     | '/reset-password'
     | '/acudiente'
@@ -182,6 +204,7 @@ export interface FileRouteTypes {
     | '/entrenadores'
     | '/entrenamientos'
     | '/equipos'
+    | '/invitaciones'
     | '/jugador'
     | '/jugadores'
     | '/admin'
@@ -189,6 +212,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/activar'
     | '/auth'
     | '/reset-password'
     | '/_authenticated/acudiente'
@@ -199,6 +223,7 @@ export interface FileRouteTypes {
     | '/_authenticated/entrenadores'
     | '/_authenticated/entrenamientos'
     | '/_authenticated/equipos'
+    | '/_authenticated/invitaciones'
     | '/_authenticated/jugador'
     | '/_authenticated/jugadores'
     | '/_authenticated/admin/'
@@ -207,6 +232,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  ActivarRoute: typeof ActivarRoute
   AuthRoute: typeof AuthRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
 }
@@ -225,6 +251,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/activar': {
+      id: '/activar'
+      path: '/activar'
+      fullPath: '/activar'
+      preLoaderRoute: typeof ActivarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -297,6 +330,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEquiposRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/invitaciones': {
+      id: '/_authenticated/invitaciones'
+      path: '/invitaciones'
+      fullPath: '/invitaciones'
+      preLoaderRoute: typeof AuthenticatedInvitacionesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/jugador': {
       id: '/_authenticated/jugador'
       path: '/jugador'
@@ -330,6 +370,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedEntrenadoresRoute: typeof AuthenticatedEntrenadoresRoute
   AuthenticatedEntrenamientosRoute: typeof AuthenticatedEntrenamientosRoute
   AuthenticatedEquiposRoute: typeof AuthenticatedEquiposRoute
+  AuthenticatedInvitacionesRoute: typeof AuthenticatedInvitacionesRoute
   AuthenticatedJugadorRoute: typeof AuthenticatedJugadorRoute
   AuthenticatedJugadoresRoute: typeof AuthenticatedJugadoresRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
@@ -344,6 +385,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedEntrenadoresRoute: AuthenticatedEntrenadoresRoute,
   AuthenticatedEntrenamientosRoute: AuthenticatedEntrenamientosRoute,
   AuthenticatedEquiposRoute: AuthenticatedEquiposRoute,
+  AuthenticatedInvitacionesRoute: AuthenticatedInvitacionesRoute,
   AuthenticatedJugadorRoute: AuthenticatedJugadorRoute,
   AuthenticatedJugadoresRoute: AuthenticatedJugadoresRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
@@ -355,6 +397,7 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  ActivarRoute: ActivarRoute,
   AuthRoute: AuthRoute,
   ResetPasswordRoute: ResetPasswordRoute,
 }
