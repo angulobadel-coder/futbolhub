@@ -225,6 +225,69 @@ export type Database = {
           },
         ]
       }
+      invitations: {
+        Row: {
+          accepted_at: string | null
+          accepted_user_id: string | null
+          code: string
+          created_at: string
+          email: string
+          expires_at: string
+          full_name: string | null
+          id: string
+          invited_by: string | null
+          player_id: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          school_id: string
+          status: Database["public"]["Enums"]["invitation_status"]
+        }
+        Insert: {
+          accepted_at?: string | null
+          accepted_user_id?: string | null
+          code: string
+          created_at?: string
+          email: string
+          expires_at?: string
+          full_name?: string | null
+          id?: string
+          invited_by?: string | null
+          player_id?: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          school_id: string
+          status?: Database["public"]["Enums"]["invitation_status"]
+        }
+        Update: {
+          accepted_at?: string | null
+          accepted_user_id?: string | null
+          code?: string
+          created_at?: string
+          email?: string
+          expires_at?: string
+          full_name?: string | null
+          id?: string
+          invited_by?: string | null
+          player_id?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          school_id?: string
+          status?: Database["public"]["Enums"]["invitation_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invitations_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invitations_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       player_guardians: {
         Row: {
           created_at: string
@@ -595,6 +658,7 @@ export type Database = {
       attendance_status: "presente" | "ausente" | "justificado"
       coach_status: "activo" | "inactivo"
       event_type: "entrenamiento" | "partido" | "torneo" | "reunion" | "otro"
+      invitation_status: "pendiente" | "aceptada" | "revocada"
       player_status: "activo" | "inactivo" | "suspendido" | "retirado"
       training_status: "programado" | "realizado" | "cancelado"
     }
@@ -728,6 +792,7 @@ export const Constants = {
       attendance_status: ["presente", "ausente", "justificado"],
       coach_status: ["activo", "inactivo"],
       event_type: ["entrenamiento", "partido", "torneo", "reunion", "otro"],
+      invitation_status: ["pendiente", "aceptada", "revocada"],
       player_status: ["activo", "inactivo", "suspendido", "retirado"],
       training_status: ["programado", "realizado", "cancelado"],
     },
