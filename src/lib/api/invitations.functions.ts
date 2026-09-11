@@ -98,12 +98,18 @@ export const activateInvitation = createServerFn({ method: "POST" })
 
     if (!userId) throw new Error("No fue posible crear el acceso.");
 
-    await supabaseAdmin
+    const { data: existingRole } = await supabaseAdmin
       .from("user_roles")
-      .upsert(
-        { user_id: userId, school_id: invite.school_id, role: invite.role },
-        { onConflict: "user_id,school_id,role", ignoreDuplicates: true },
-      );
+      .select("id")
+      .eq("user_id", userId)
+      .eq("school_id", invite.school_id)
+      .eq("role", invite.role)
+      .maybeSingle();
+    if (!existingRole) {
+      await supabaseAdmin
+        .from("user_roles")
+        .insert({ user_id: userId, school_id: invite.school_id, role: invite.role });
+    }
 
     if (invite.role === "coach") {
       const { data: coach } = await supabaseAdmin

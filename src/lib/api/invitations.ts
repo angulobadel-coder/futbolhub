@@ -1,4 +1,6 @@
-import { supabase, unwrap, type AppRole, type Database } from "./client";
+import type { Database } from "@/integrations/supabase/types";
+
+import { supabase, unwrap, type AppRole } from "./client";
 
 export type Invitation = Database["public"]["Tables"]["invitations"]["Row"];
 
