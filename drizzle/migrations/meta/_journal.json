@@ -15,6 +15,13 @@
       "when": 1788234779098,
       "tag": "0001_roles_superadmin_guardians",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789102356116,
+      "tag": "0002_invitations_private_access",
+      "breakpoints": true
     }
   ]
 }
