@@ -84,44 +84,18 @@ function AuthPage() {
     }
   }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>, mode: "login" | "signup") {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     const parsed = credentials.safeParse({
       email: form.get("email"),
       password: form.get("password"),
-      fullName: form.get("fullName") || undefined,
     });
     if (!parsed.success) {
       toast.error(parsed.error.issues[0]?.message ?? "Revisa los datos");
       return;
     }
-
-    if (mode === "login") {
-      await signIn(parsed.data.email, parsed.data.password);
-      return;
-    }
-
-    setPending(true);
-    try {
-      const { error } = await supabase.auth.signUp({
-        email: parsed.data.email,
-        password: parsed.data.password,
-        options: {
-          data: { full_name: parsed.data.fullName },
-          emailRedirectTo: window.location.origin,
-        },
-      });
-      if (error) throw error;
-      toast.success("Cuenta creada. Se te asignó la escuela demo como administrador.");
-      await goToRoleHome();
-    } catch (error) {
-      toast.error(
-        friendlyError(error instanceof Error ? error.message : "No fue posible crear la cuenta"),
-      );
-    } finally {
-      setPending(false);
-    }
+    await signIn(parsed.data.email, parsed.data.password);
   }
 
   async function recover(email: string) {
@@ -151,74 +125,43 @@ function AuthPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="login">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="login">Iniciar sesión</TabsTrigger>
-                <TabsTrigger value="signup">Crear cuenta</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="login">
-                <form className="mt-4 space-y-4" onSubmit={(e) => handleSubmit(e, "login")}>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="login-email">Correo electrónico</Label>
-                    <Input id="login-email" name="email" type="email" required autoComplete="email" />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="login-password">Contraseña</Label>
-                    <Input
-                      id="login-password"
-                      name="password"
-                      type="password"
-                      required
-                      autoComplete="current-password"
-                    />
-                  </div>
-                  <Button type="submit" className="w-full" disabled={pending}>
-                    {pending ? "Ingresando…" : "Iniciar sesión"}
-                  </Button>
-                  <button
-                    type="button"
-                    className="w-full text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground"
-                    onClick={() => {
-                      const input = document.getElementById("login-email") as HTMLInputElement | null;
-                      void recover(input?.value.trim() ?? "");
-                    }}
-                  >
-                    ¿Olvidaste tu contraseña?
-                  </button>
-                </form>
-              </TabsContent>
-
-              <TabsContent value="signup">
-                <form className="mt-4 space-y-4" onSubmit={(e) => handleSubmit(e, "signup")}>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="signup-name">Nombre completo</Label>
-                    <Input id="signup-name" name="fullName" type="text" required autoComplete="name" />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="signup-email">Correo electrónico</Label>
-                    <Input id="signup-email" name="email" type="email" required autoComplete="email" />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="signup-password">Contraseña</Label>
-                    <Input
-                      id="signup-password"
-                      name="password"
-                      type="password"
-                      required
-                      autoComplete="new-password"
-                    />
-                  </div>
-                  <Button type="submit" className="w-full" disabled={pending}>
-                    {pending ? "Creando…" : "Crear cuenta"}
-                  </Button>
-                  <p className="text-xs text-muted-foreground">
-                    Las cuentas nuevas quedan asignadas como administrador de la escuela demo
-                    "Academia Fútbol Futuro".
-                  </p>
-                </form>
-              </TabsContent>
-            </Tabs>
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              <div className="space-y-1.5">
+                <Label htmlFor="login-email">Correo electrónico</Label>
+                <Input id="login-email" name="email" type="email" required autoComplete="email" />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="login-password">Contraseña</Label>
+                <Input
+                  id="login-password"
+                  name="password"
+                  type="password"
+                  required
+                  autoComplete="current-password"
+                />
+              </div>
+              <Button type="submit" className="w-full" disabled={pending}>
+                {pending ? "Ingresando…" : "Iniciar sesión"}
+              </Button>
+              <button
+                type="button"
+                className="w-full text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground"
+                onClick={() => {
+                  const input = document.getElementById("login-email") as HTMLInputElement | null;
+                  void recover(input?.value.trim() ?? "");
+                }}
+              >
+                ¿Olvidaste tu contraseña?
+              </button>
+              <p className="rounded-lg border border-border/70 bg-muted/30 p-3 text-xs text-muted-foreground">
+                FútbolGestión es una plataforma privada: no hay registro abierto. ¿Recibiste un
+                código de invitación?{" "}
+                <Link to="/activar" className="underline underline-offset-2 hover:text-foreground">
+                  Actívalo aquí
+                </Link>
+                .
+              </p>
+            </form>
           </CardContent>
         </Card>
 
