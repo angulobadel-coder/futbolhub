@@ -28,7 +28,7 @@ export async function createInvitation(values: {
 }) {
   const code = generateCode();
   const { data: auth } = await supabase.auth.getUser();
-  const row = unwrap(
+  const row = unwrap<Invitation | null>(
     await supabase
       .from("invitations")
       .insert({
@@ -43,6 +43,7 @@ export async function createInvitation(values: {
       .select()
       .single(),
   );
+  if (!row) throw new Error("No fue posible crear la invitación.");
   return row;
 }
 
