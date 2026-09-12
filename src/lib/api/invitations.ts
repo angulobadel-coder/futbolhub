@@ -43,7 +43,7 @@ export async function createInvitation(values: {
       .select()
       .single(),
   );
-  return row;
+  return row as Invitation;
 }
 
 export async function revokeInvitation(id: string) {
