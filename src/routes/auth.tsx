@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchPrimaryRole } from "@/lib/api/tenancy";
 import { ROLE_HOME } from "@/lib/roles";
@@ -16,9 +15,9 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "Acceder — FútbolGestión" },
-      { name: "description", content: "Inicia sesión o crea tu cuenta en FútbolGestión." },
+      { name: "description", content: "Inicia sesión en FútbolGestión, plataforma privada de gestión deportiva." },
       { property: "og:title", content: "Acceder — FútbolGestión" },
-      { property: "og:description", content: "Inicia sesión o crea tu cuenta en FútbolGestión." },
+      { property: "og:description", content: "Inicia sesión en FútbolGestión, plataforma privada de gestión deportiva." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -38,7 +37,6 @@ export const Route = createFileRoute("/auth")({
 const credentials = z.object({
   email: z.string().trim().email({ message: "Correo inválido" }).max(255),
   password: z.string().min(6, { message: "La contraseña debe tener al menos 6 caracteres" }).max(72),
-  fullName: z.string().trim().max(120).optional(),
 });
 
 const DEMO_PASSWORD = "FutbolDemo2026!";
