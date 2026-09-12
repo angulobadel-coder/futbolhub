@@ -93,7 +93,7 @@ function LandingPage() {
             <Link to="/auth">Iniciar sesión</Link>
           </Button>
           <Button asChild className="hidden sm:inline-flex">
-            <Link to="/auth">Crear cuenta</Link>
+            <Link to="/activar">Activar invitación</Link>
           </Button>
         </div>
       </header>
@@ -218,7 +218,7 @@ function LandingPage() {
               Crea tu cuenta y explora Academia Fútbol Futuro con datos ficticios precargados.
             </p>
             <Button size="lg" className="mt-6" asChild>
-              <Link to="/auth">Crear cuenta gratis</Link>
+              <Link to="/activar">Activar invitación</Link>
             </Button>
           </div>
         </section>

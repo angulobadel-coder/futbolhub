@@ -18,6 +18,7 @@ const ROLE_ROUTES: Record<AppRole, string[]> = {
     "/entrenadores",
     "/categorias",
     "/equipos",
+    "/invitaciones",
     "/entrenamientos",
     "/calendario",
   ],
