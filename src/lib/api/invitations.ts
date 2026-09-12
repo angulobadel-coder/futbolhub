@@ -43,7 +43,8 @@ export async function createInvitation(values: {
       .select()
       .single(),
   );
-  return row as Invitation;
+  if (!row) throw new Error("No fue posible crear la invitación.");
+  return row;
 }
 
 export async function revokeInvitation(id: string) {
