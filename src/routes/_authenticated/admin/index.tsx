@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Building2, ShieldCheck, Users, UserRound, Trophy, Plus } from "lucide-react";
+import { Building2, ShieldCheck, Users, UserRound, Trophy, Plus, Mail, Copy, Ban } from "lucide-react";
 import { toast } from "sonner";
 
 import { PageHeader } from "@/components/common/page-header";
@@ -29,6 +29,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { fetchPlatformOverview, setSchoolActive, upsertSchool } from "@/lib/api/platform";
+import {
+  createInvitation,
+  invitationLink,
+  listInvitations,
+  revokeInvitation,
+} from "@/lib/api/invitations";
 import type { School } from "@/lib/api/client";
 import { useTenant } from "@/lib/tenant";
 
@@ -57,6 +63,35 @@ function AdminPanel() {
   const queryClient = useQueryClient();
   const { selectSchool } = useTenant();
   const [editing, setEditing] = useState<Partial<School> | null>(null);
+  const [inviting, setInviting] = useState<School | null>(null);
+
+  const invitations = useQuery({ queryKey: ["invitations", "all"], queryFn: () => listInvitations() });
+
+  const invite = useMutation({
+    mutationFn: (values: { schoolId: string; email: string; fullName: string }) =>
+      createInvitation({
+        schoolId: values.schoolId,
+        role: "director",
+        email: values.email,
+        fullName: values.fullName || null,
+      }),
+    onSuccess: (row) => {
+      setInviting(null);
+      queryClient.invalidateQueries({ queryKey: ["invitations", "all"] });
+      void navigator.clipboard?.writeText(invitationLink(row.code));
+      toast.success(`Invitación creada y enlace copiado. Código: ${row.code}`);
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const revoke = useMutation({
+    mutationFn: revokeInvitation,
+    onSuccess: () => {
+      toast.success("Invitación anulada");
+      queryClient.invalidateQueries({ queryKey: ["invitations", "all"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   const overview = useQuery({ queryKey: ["platform-overview"], queryFn: fetchPlatformOverview });
 
@@ -159,6 +194,13 @@ function AdminPanel() {
                         Editar
                       </Button>
                       <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setInviting(row.school)}
+                      >
+                        <Mail className="size-4" /> Invitar admin
+                      </Button>
+                      <Button
                         variant="outline"
                         size="sm"
                         onClick={() => selectSchool(row.school.id)}
@@ -173,6 +215,108 @@ function AdminPanel() {
           </Table>
         </CardContent>
       </Card>
+
+      <Card className="border-border/70 bg-card/80">
+        <CardHeader>
+          <CardTitle className="text-base">Invitaciones de acceso</CardTitle>
+        </CardHeader>
+        <CardContent className="overflow-x-auto">
+          {(invitations.data ?? []).length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Aún no has generado invitaciones. Crea una escuela y envía el código a su
+              administrador.
+            </p>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Correo</TableHead>
+                  <TableHead>Rol</TableHead>
+                  <TableHead>Código</TableHead>
+                  <TableHead>Estado</TableHead>
+                  <TableHead className="text-right">Acciones</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {(invitations.data ?? []).map((row) => (
+                  <TableRow key={row.id}>
+                    <TableCell className="font-medium">{row.email}</TableCell>
+                    <TableCell className="text-muted-foreground">{row.role}</TableCell>
+                    <TableCell className="font-mono text-xs">{row.code}</TableCell>
+                    <TableCell>
+                      <Badge variant={row.status === "pendiente" ? "default" : "outline"}>
+                        {row.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            void navigator.clipboard?.writeText(invitationLink(row.code));
+                            toast.success("Enlace copiado");
+                          }}
+                        >
+                          <Copy className="size-4" /> Copiar
+                        </Button>
+                        {row.status === "pendiente" ? (
+                          <Button variant="outline" size="sm" onClick={() => revoke.mutate(row.id)}>
+                            <Ban className="size-4" /> Anular
+                          </Button>
+                        ) : null}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
+
+      <Dialog open={!!inviting} onOpenChange={(open) => !open && setInviting(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Invitar administrador de {inviting?.name}</DialogTitle>
+          </DialogHeader>
+          <form
+            className="space-y-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const form = new FormData(e.currentTarget);
+              const email = String(form.get("email") ?? "").trim();
+              if (!email.includes("@")) {
+                toast.error("Escribe un correo válido");
+                return;
+              }
+              invite.mutate({
+                schoolId: inviting!.id,
+                email,
+                fullName: String(form.get("fullName") ?? "").trim(),
+              });
+            }}
+          >
+            <div className="space-y-1.5">
+              <Label htmlFor="invite-email">Correo del administrador</Label>
+              <Input id="invite-email" name="email" type="email" required />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="invite-name">Nombre (opcional)</Label>
+              <Input id="invite-name" name="fullName" />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Se genera un código de activación de un solo uso. La persona crea su propia
+              contraseña; tú nunca la conoces.
+            </p>
+            <DialogFooter>
+              <Button type="submit" disabled={invite.isPending}>
+                {invite.isPending ? "Generando…" : "Generar invitación"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={!!editing} onOpenChange={(open) => !open && setEditing(null)}>
         <DialogContent>
