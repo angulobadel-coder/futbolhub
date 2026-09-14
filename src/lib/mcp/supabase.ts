@@ -65,10 +65,11 @@ export function notAuthenticated() {
   };
 }
 
-export function jsonResult(data: unknown) {
+export function jsonResult(data: unknown): ToolHandlerResult {
+  const text = JSON.stringify(data, null, 2);
   return {
-    content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
-    structuredContent: { data } as Record<string, unknown>,
+    content: [{ type: "text", text }],
+    structuredContent: JSON.parse(text) as ToolHandlerResult["structuredContent"],
   };
 }
 
