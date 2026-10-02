@@ -23,11 +23,16 @@ export const Route = createFileRoute("/auth")({
     ],
   }),
   ssr: false,
-  beforeLoad: async () => {
+  validateSearch: (s: Record<string, unknown>): { next?: string } => {
+    const n = s["next"];
+    return typeof n === "string" && n.startsWith("/") && !n.startsWith("//") ? { next: n } : {};
+  },
+  beforeLoad: async ({ search }) => {
     const { data } = await supabase.auth.getUser();
     if (data.user) {
-      const role = await fetchPrimaryRole();
       const { redirect } = await import("@tanstack/react-router");
+      if (search.next) throw redirect({ href: search.next });
+      const role = await fetchPrimaryRole();
       throw redirect({ to: role ? ROLE_HOME[role] : "/dashboard" });
     }
   },
@@ -62,7 +67,13 @@ function AuthPage() {
   const navigate = useNavigate();
   const [pending, setPending] = useState(false);
 
+  const { next } = Route.useSearch();
+
   async function goToRoleHome() {
+    if (next) {
+      window.location.href = next;
+      return;
+    }
     const role = await fetchPrimaryRole();
     navigate({ to: role ? ROLE_HOME[role] : "/dashboard" });
   }
