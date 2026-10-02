@@ -148,6 +148,160 @@ export type Database = {
           },
         ]
       }
+      competition_matches: {
+        Row: {
+          away_goals: number | null
+          away_penalties: number | null
+          away_team_id: string | null
+          competition_id: string
+          created_at: string
+          group_name: string | null
+          home_goals: number | null
+          home_penalties: number | null
+          home_team_id: string | null
+          id: string
+          school_id: string
+          slot: number
+          stage: string
+        }
+        Insert: {
+          away_goals?: number | null
+          away_penalties?: number | null
+          away_team_id?: string | null
+          competition_id: string
+          created_at?: string
+          group_name?: string | null
+          home_goals?: number | null
+          home_penalties?: number | null
+          home_team_id?: string | null
+          id?: string
+          school_id: string
+          slot?: number
+          stage: string
+        }
+        Update: {
+          away_goals?: number | null
+          away_penalties?: number | null
+          away_team_id?: string | null
+          competition_id?: string
+          created_at?: string
+          group_name?: string | null
+          home_goals?: number | null
+          home_penalties?: number | null
+          home_team_id?: string | null
+          id?: string
+          school_id?: string
+          slot?: number
+          stage?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_matches_away_team_id_fkey"
+            columns: ["away_team_id"]
+            isOneToOne: false
+            referencedRelation: "competition_teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_matches_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_matches_home_team_id_fkey"
+            columns: ["home_team_id"]
+            isOneToOne: false
+            referencedRelation: "competition_teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_matches_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      competition_teams: {
+        Row: {
+          competition_id: string
+          created_at: string
+          group_name: string | null
+          id: string
+          name: string
+          school_id: string
+        }
+        Insert: {
+          competition_id: string
+          created_at?: string
+          group_name?: string | null
+          id?: string
+          name: string
+          school_id: string
+        }
+        Update: {
+          competition_id?: string
+          created_at?: string
+          group_name?: string | null
+          id?: string
+          name?: string
+          school_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competition_teams_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "competition_teams_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      competitions: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          qualifiers_per_group: number
+          school_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name: string
+          qualifiers_per_group?: number
+          school_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+          qualifiers_per_group?: number
+          school_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competitions_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
           category_id: string | null
