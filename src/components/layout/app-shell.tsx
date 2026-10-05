@@ -12,6 +12,7 @@ import {
   HeartHandshake,
   LayoutDashboard,
   LogOut,
+  Medal,
   Mail,
   Megaphone,
   Menu,
@@ -57,6 +58,7 @@ const MANAGEMENT: NavItem[] = [
   { to: "/entrenamientos", label: "Entrenamientos", icon: Dumbbell, ready: true },
   { to: "/entrenamientos", label: "Asistencia", icon: ClipboardCheck, ready: true },
   { to: "/calendario", label: "Calendario", icon: CalendarDays, ready: true },
+  { to: "/competiciones", label: "Competiciones", icon: Medal, ready: true },
   { to: "/invitaciones", label: "Invitaciones", icon: Mail, ready: true },
   { to: "#", label: "Partidos", icon: Swords, ready: false },
   { to: "#", label: "Estadísticas", icon: BarChart3, ready: false },
@@ -75,6 +77,7 @@ const COACH_NAV: NavItem[] = [
   { to: "/jugadores", label: "Mis jugadores", icon: Users, ready: true },
   { to: "/equipos", label: "Mis equipos", icon: Trophy, ready: true },
   { to: "/calendario", label: "Calendario", icon: CalendarDays, ready: true },
+  { to: "/competiciones", label: "Competiciones", icon: Medal, ready: true },
   { to: "#", label: "Evaluaciones", icon: Star, ready: false },
   { to: "#", label: "Estadísticas", icon: BarChart3, ready: false },
 ];
