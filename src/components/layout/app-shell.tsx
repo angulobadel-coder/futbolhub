@@ -117,10 +117,15 @@ export function AppShell({ children }: { children: ReactNode }) {
   const nav = navFor(role, !!school);
 
   async function signOut() {
-    await queryClient.cancelQueries();
+    try {
+      await queryClient.cancelQueries();
+      await supabase.auth.signOut();
+    } catch (e) {
+      console.error(e);
+    }
+    // Navegar primero y limpiar la caché después, cuando las pantallas protegidas ya no están montadas.
+    await navigate({ to: "/auth", replace: true });
     queryClient.clear();
-    await supabase.auth.signOut();
-    navigate({ to: "/auth", replace: true });
   }
 
   return (

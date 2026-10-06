@@ -63,7 +63,9 @@ function CoachDashboard() {
   if (q.isLoading) return <LoadingRows rows={5} />;
   if (q.error) return <ErrorState message={(q.error as Error).message} />;
 
-  const { coaches, teams, players, sessions, attendance } = q.data!;
+  if (!q.data) return null;
+
+  const { coaches, teams, players, sessions, attendance } = q.data;
   const scope = resolveScope({ role, userId: user?.id, coaches, teams, players });
   const myTeams = teams.filter((t) => scope.teamIds.includes(t.id));
   const myPlayers = players.filter(

@@ -149,7 +149,7 @@ function CompetitionList() {
         />
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {q.data!.map((c) => (
+          {(q.data ?? []).map((c) => (
             <Link
               key={c.id}
               to="/competiciones"
@@ -188,7 +188,8 @@ function CompetitionDetail({ id }: { id: string }) {
 
   if (q.isLoading) return <LoadingRows rows={5} />;
   if (q.error) return <ErrorState message={errMsg(q.error)} />;
-  const { competition, teams, matches } = q.data!;
+  if (!q.data) return null;
+  const { competition, teams, matches } = q.data;
   const hasKnockout = matches.some((m) => m.stage !== GROUP_STAGE);
 
   return (
