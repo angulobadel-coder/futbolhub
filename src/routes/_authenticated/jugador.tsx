@@ -60,7 +60,9 @@ function PlayerPortal() {
   if (q.isLoading) return <LoadingRows rows={5} />;
   if (q.error) return <ErrorState message={(q.error as Error).message} />;
 
-  const { players, teams, categories, coaches, sessions, attendance, events } = q.data!;
+  if (!q.data) return null;
+
+  const { players, teams, categories, coaches, sessions, attendance, events } = q.data;
   const me = players.find((p) => p.user_id === user?.id) ?? players[0];
 
   if (!me) {

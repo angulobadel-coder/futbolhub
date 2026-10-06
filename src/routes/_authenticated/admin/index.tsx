@@ -119,7 +119,9 @@ function AdminPanel() {
   if (overview.isLoading) return <LoadingRows rows={6} />;
   if (overview.error) return <ErrorState message={(overview.error as Error).message} />;
 
-  const data = overview.data!;
+  if (!overview.data) return null;
+
+  const data = overview.data;
 
   return (
     <div className="space-y-6">
