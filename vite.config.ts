@@ -15,5 +15,9 @@ export default defineConfig({
   },
   vite: {
     plugins: [mcpPlugin()],
+    preview: {
+      // Allow the Railway domain (and any future custom domain) to serve the app.
+      allowedHosts: true,
+    },
   },
 });
