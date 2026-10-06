@@ -119,13 +119,19 @@ export function AppShell({ children }: { children: ReactNode }) {
   async function signOut() {
     try {
       await queryClient.cancelQueries();
-      await supabase.auth.signOut();
+      // "local" siempre borra la sesión del navegador, aunque falle la llamada al servidor.
+      const { error } = await supabase.auth.signOut({ scope: "local" });
+      if (error) console.error(error);
     } catch (e) {
       console.error(e);
     }
-    // Navegar primero y limpiar la caché después, cuando las pantallas protegidas ya no están montadas.
-    await navigate({ to: "/auth", replace: true });
-    queryClient.clear();
+    try {
+      window.localStorage.removeItem("fg.selected-school");
+    } catch {
+      /* ignore */
+    }
+    // Recarga completa: reinicia todo el estado en memoria y evita sesiones residuales.
+    window.location.replace("/auth");
   }
 
   return (
