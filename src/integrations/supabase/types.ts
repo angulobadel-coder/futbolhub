@@ -442,6 +442,63 @@ export type Database = {
           },
         ]
       }
+      payments: {
+        Row: {
+          amount: number
+          concept: string
+          created_at: string
+          due_date: string
+          id: string
+          method: Database["public"]["Enums"]["payment_method"] | null
+          note: string | null
+          paid_at: string | null
+          period: string | null
+          player_id: string
+          school_id: string
+        }
+        Insert: {
+          amount: number
+          concept?: string
+          created_at?: string
+          due_date: string
+          id?: string
+          method?: Database["public"]["Enums"]["payment_method"] | null
+          note?: string | null
+          paid_at?: string | null
+          period?: string | null
+          player_id: string
+          school_id: string
+        }
+        Update: {
+          amount?: number
+          concept?: string
+          created_at?: string
+          due_date?: string
+          id?: string
+          method?: Database["public"]["Enums"]["payment_method"] | null
+          note?: string | null
+          paid_at?: string | null
+          period?: string | null
+          player_id?: string
+          school_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       player_guardians: {
         Row: {
           created_at: string
@@ -802,6 +859,7 @@ export type Database = {
         Returns: boolean
       }
       is_player_guardian: { Args: { _player_id: string }; Returns: boolean }
+      is_school_director: { Args: { _school_id: string }; Returns: boolean }
       is_school_member: { Args: { _school_id: string }; Returns: boolean }
       is_school_staff: { Args: { _school_id: string }; Returns: boolean }
       is_session_coach: { Args: { _coach_id: string }; Returns: boolean }
@@ -813,6 +871,7 @@ export type Database = {
       coach_status: "activo" | "inactivo"
       event_type: "entrenamiento" | "partido" | "torneo" | "reunion" | "otro"
       invitation_status: "pendiente" | "aceptada" | "revocada"
+      payment_method: "efectivo" | "transferencia" | "tarjeta" | "otro"
       player_status: "activo" | "inactivo" | "suspendido" | "retirado"
       training_status: "programado" | "realizado" | "cancelado"
     }
@@ -947,6 +1006,7 @@ export const Constants = {
       coach_status: ["activo", "inactivo"],
       event_type: ["entrenamiento", "partido", "torneo", "reunion", "otro"],
       invitation_status: ["pendiente", "aceptada", "revocada"],
+      payment_method: ["efectivo", "transferencia", "tarjeta", "otro"],
       player_status: ["activo", "inactivo", "suspendido", "retirado"],
       training_status: ["programado", "realizado", "cancelado"],
     },
