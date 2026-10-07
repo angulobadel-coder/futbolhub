@@ -118,19 +118,26 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   async function signOut() {
     try {
-      await queryClient.cancelQueries();
-      // "local" siempre borra la sesión del navegador, aunque falle la llamada al servidor.
-      const { error } = await supabase.auth.signOut({ scope: "local" });
-      if (error) console.error(error);
-    } catch (e) {
-      console.error(e);
-    }
-    try {
-      window.localStorage.removeItem("fg.selected-school");
+      void queryClient.cancelQueries();
+      queryClient.clear();
     } catch {
       /* ignore */
     }
-    // Recarga completa: reinicia todo el estado en memoria y evita sesiones residuales.
+    // Cierre local con límite de tiempo: si la llamada se queda colgada, seguimos igual.
+    await Promise.race([
+      supabase.auth.signOut({ scope: "local" }).catch((e) => console.error(e)),
+      new Promise((r) => setTimeout(r, 1500)),
+    ]);
+    // Garantiza que no quede ninguna sesión guardada en el navegador.
+    try {
+      for (const store of [window.localStorage, window.sessionStorage]) {
+        Object.keys(store)
+          .filter((k) => k.startsWith("sb-") || k === "fg.selected-school")
+          .forEach((k) => store.removeItem(k));
+      }
+    } catch {
+      /* ignore */
+    }
     window.location.replace("/auth");
   }
 
