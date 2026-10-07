@@ -29,6 +29,20 @@
       "when": 1790908872087,
       "tag": "0003_competitions",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791407345947,
+      "tag": "0004_payments_module",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791407388811,
+      "tag": "0005_payments_unique_index",
+      "breakpoints": true
     }
   ]
 }
