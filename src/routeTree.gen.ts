@@ -28,6 +28,7 @@ import { Route as AuthenticatedEquiposRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedInvitacionesRouteImport } from './routes/_authenticated/invitaciones'
 import { Route as AuthenticatedJugadorRouteImport } from './routes/_authenticated/jugador'
 import { Route as AuthenticatedJugadoresRouteImport } from './routes/_authenticated/jugadores'
+import { Route as AuthenticatedPagosRouteImport } from './routes/_authenticated/pagos'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 
@@ -130,6 +131,11 @@ const AuthenticatedJugadoresRoute = AuthenticatedJugadoresRouteImport.update({
   path: '/jugadores',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPagosRoute = AuthenticatedPagosRouteImport.update({
+  id: '/pagos',
+  path: '/pagos',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
   id: '/.lovable/oauth/consent',
   path: '/.lovable/oauth/consent',
@@ -160,6 +166,7 @@ export interface FileRoutesByFullPath {
   '/invitaciones': typeof AuthenticatedInvitacionesRoute
   '/jugador': typeof AuthenticatedJugadorRoute
   '/jugadores': typeof AuthenticatedJugadoresRoute
+  '/pagos': typeof AuthenticatedPagosRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
 }
@@ -182,6 +189,7 @@ export interface FileRoutesByTo {
   '/invitaciones': typeof AuthenticatedInvitacionesRoute
   '/jugador': typeof AuthenticatedJugadorRoute
   '/jugadores': typeof AuthenticatedJugadoresRoute
+  '/pagos': typeof AuthenticatedPagosRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
 }
@@ -206,6 +214,7 @@ export interface FileRoutesById {
   '/_authenticated/invitaciones': typeof AuthenticatedInvitacionesRoute
   '/_authenticated/jugador': typeof AuthenticatedJugadorRoute
   '/_authenticated/jugadores': typeof AuthenticatedJugadoresRoute
+  '/_authenticated/pagos': typeof AuthenticatedPagosRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
@@ -230,6 +239,7 @@ export interface FileRouteTypes {
     | '/invitaciones'
     | '/jugador'
     | '/jugadores'
+    | '/pagos'
     | '/.lovable/oauth/consent'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
@@ -252,6 +262,7 @@ export interface FileRouteTypes {
     | '/invitaciones'
     | '/jugador'
     | '/jugadores'
+    | '/pagos'
     | '/.lovable/oauth/consent'
     | '/admin'
   id:
@@ -275,6 +286,7 @@ export interface FileRouteTypes {
     | '/_authenticated/invitaciones'
     | '/_authenticated/jugador'
     | '/_authenticated/jugadores'
+    | '/_authenticated/pagos'
     | '/.lovable/oauth/consent'
     | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
@@ -425,6 +437,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedJugadoresRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/pagos': {
+      id: '/_authenticated/pagos'
+      path: '/pagos'
+      fullPath: '/pagos'
+      preLoaderRoute: typeof AuthenticatedPagosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/.lovable/oauth/consent': {
       id: '/.lovable/oauth/consent'
       path: '/.lovable/oauth/consent'
@@ -455,6 +474,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedInvitacionesRoute: typeof AuthenticatedInvitacionesRoute
   AuthenticatedJugadorRoute: typeof AuthenticatedJugadorRoute
   AuthenticatedJugadoresRoute: typeof AuthenticatedJugadoresRoute
+  AuthenticatedPagosRoute: typeof AuthenticatedPagosRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
@@ -471,6 +491,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedInvitacionesRoute: AuthenticatedInvitacionesRoute,
   AuthenticatedJugadorRoute: AuthenticatedJugadorRoute,
   AuthenticatedJugadoresRoute: AuthenticatedJugadoresRoute,
+  AuthenticatedPagosRoute: AuthenticatedPagosRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
