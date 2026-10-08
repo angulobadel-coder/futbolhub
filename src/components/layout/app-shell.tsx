@@ -83,8 +83,7 @@ const COACH_NAV: NavItem[] = [
 ];
 
 const GUARDIAN_NAV: NavItem[] = [
-  { to: "/acudiente", label: "Mis hijos", icon: HeartHandshake, ready: true },
-  { to: "/pagos", label: "Pagos", icon: CreditCard, ready: true },
+  { to: "/acudiente", label: "Mis hijos y pagos", icon: HeartHandshake, ready: true },
   { to: "#", label: "Comunicaciones", icon: Megaphone, ready: false },
 ];
 
