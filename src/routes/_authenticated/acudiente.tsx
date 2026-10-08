@@ -13,6 +13,8 @@ import { listCategories, listPlayers, listTeams } from "@/lib/api/school-data";
 import { listAttendance, listEvents, listTrainingSessions } from "@/lib/api/training";
 import { computeAttendance, LOW_ATTENDANCE_THRESHOLD } from "@/lib/rules/attendance";
 import { useTenant } from "@/lib/tenant";
+import { listPayments } from "@/lib/api/payments";
+import { formatCOP, paymentStatus, PAYMENT_STATUS_LABEL } from "@/lib/rules/payments";
 
 export const Route = createFileRoute("/_authenticated/acudiente")({
   head: () => ({
@@ -46,15 +48,16 @@ function GuardianPortal() {
     queryKey: ["guardian-portal", schoolId],
     enabled: !!schoolId,
     queryFn: async () => {
-      const [players, teams, categories, sessions, attendance, events] = await Promise.all([
+      const [players, teams, categories, sessions, attendance, events, payments] = await Promise.all([
         listPlayers(schoolId),
         listTeams(schoolId),
         listCategories(schoolId),
         listTrainingSessions(schoolId),
         listAttendance(schoolId),
         listEvents(schoolId),
+        listPayments(schoolId),
       ]);
-      return { players, teams, categories, sessions, attendance, events };
+      return { players, teams, categories, sessions, attendance, events, payments };
     },
   });
 
@@ -63,7 +66,7 @@ function GuardianPortal() {
 
   if (!q.data) return null;
 
-  const { players, teams, categories, sessions, attendance, events } = q.data;
+  const { players, teams, categories, sessions, attendance, events, payments } = q.data;
 
   if (players.length === 0) {
     return (
@@ -79,6 +82,7 @@ function GuardianPortal() {
 
   const child = players.find((p) => p.id === activeId) ?? players[0]!;
   const team = teams.find((t) => t.id === child.team_id);
+  const childPayments = payments.filter((p) => p.player_id === child.id);
   const category = categories.find((c) => c.id === child.category_id);
   const childSessions = sessions.filter(
     (s) =>
@@ -229,6 +233,34 @@ function GuardianPortal() {
           </CardContent>
         </Card>
       </div>
+      <Card className="border-border/70 bg-card/80">
+        <CardHeader>
+          <CardTitle className="text-base">Pagos y mensualidades</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2 text-sm">
+          {childPayments.length === 0 ? (
+            <p className="text-muted-foreground">No hay cobros registrados.</p>
+          ) : (
+            childPayments.map((p) => {
+              const st = paymentStatus(p, today());
+              return (
+                <div key={p.id} className="flex items-center justify-between rounded-lg border border-border/60 px-3 py-2">
+                  <span>
+                    {p.concept}
+                    {p.period ? ` · ${p.period}` : ""} · vence {p.due_date}
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <span className="font-medium">{formatCOP(p.amount)}</span>
+                    <Badge variant={st === "pagado" ? "default" : st === "vencido" ? "destructive" : "outline"}>
+                      {PAYMENT_STATUS_LABEL[st]}
+                    </Badge>
+                  </span>
+                </div>
+              );
+            })
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
