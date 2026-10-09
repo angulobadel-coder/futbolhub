@@ -20,6 +20,7 @@ import { Route as AuthenticatedAcudienteRouteImport } from './routes/_authentica
 import { Route as AuthenticatedCalendarioRouteImport } from './routes/_authenticated/calendario'
 import { Route as AuthenticatedCategoriasRouteImport } from './routes/_authenticated/categorias'
 import { Route as AuthenticatedCompeticionesRouteImport } from './routes/_authenticated/competiciones'
+import { Route as AuthenticatedComunicacionesRouteImport } from './routes/_authenticated/comunicaciones'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedEntrenadorRouteImport } from './routes/_authenticated/entrenador'
 import { Route as AuthenticatedEntrenadoresRouteImport } from './routes/_authenticated/entrenadores'
@@ -86,6 +87,12 @@ const AuthenticatedCompeticionesRoute =
   AuthenticatedCompeticionesRouteImport.update({
     id: '/competiciones',
     path: '/competiciones',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedComunicacionesRoute =
+  AuthenticatedComunicacionesRouteImport.update({
+    id: '/comunicaciones',
+    path: '/comunicaciones',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -158,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/calendario': typeof AuthenticatedCalendarioRoute
   '/categorias': typeof AuthenticatedCategoriasRoute
   '/competiciones': typeof AuthenticatedCompeticionesRoute
+  '/comunicaciones': typeof AuthenticatedComunicacionesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/entrenador': typeof AuthenticatedEntrenadorRoute
   '/entrenadores': typeof AuthenticatedEntrenadoresRoute
@@ -181,6 +189,7 @@ export interface FileRoutesByTo {
   '/calendario': typeof AuthenticatedCalendarioRoute
   '/categorias': typeof AuthenticatedCategoriasRoute
   '/competiciones': typeof AuthenticatedCompeticionesRoute
+  '/comunicaciones': typeof AuthenticatedComunicacionesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/entrenador': typeof AuthenticatedEntrenadorRoute
   '/entrenadores': typeof AuthenticatedEntrenadoresRoute
@@ -206,6 +215,7 @@ export interface FileRoutesById {
   '/_authenticated/calendario': typeof AuthenticatedCalendarioRoute
   '/_authenticated/categorias': typeof AuthenticatedCategoriasRoute
   '/_authenticated/competiciones': typeof AuthenticatedCompeticionesRoute
+  '/_authenticated/comunicaciones': typeof AuthenticatedComunicacionesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/entrenador': typeof AuthenticatedEntrenadorRoute
   '/_authenticated/entrenadores': typeof AuthenticatedEntrenadoresRoute
@@ -231,6 +241,7 @@ export interface FileRouteTypes {
     | '/calendario'
     | '/categorias'
     | '/competiciones'
+    | '/comunicaciones'
     | '/dashboard'
     | '/entrenador'
     | '/entrenadores'
@@ -254,6 +265,7 @@ export interface FileRouteTypes {
     | '/calendario'
     | '/categorias'
     | '/competiciones'
+    | '/comunicaciones'
     | '/dashboard'
     | '/entrenador'
     | '/entrenadores'
@@ -278,6 +290,7 @@ export interface FileRouteTypes {
     | '/_authenticated/calendario'
     | '/_authenticated/categorias'
     | '/_authenticated/competiciones'
+    | '/_authenticated/comunicaciones'
     | '/_authenticated/dashboard'
     | '/_authenticated/entrenador'
     | '/_authenticated/entrenadores'
@@ -381,6 +394,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCompeticionesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/comunicaciones': {
+      id: '/_authenticated/comunicaciones'
+      path: '/comunicaciones'
+      fullPath: '/comunicaciones'
+      preLoaderRoute: typeof AuthenticatedComunicacionesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -466,6 +486,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCalendarioRoute: typeof AuthenticatedCalendarioRoute
   AuthenticatedCategoriasRoute: typeof AuthenticatedCategoriasRoute
   AuthenticatedCompeticionesRoute: typeof AuthenticatedCompeticionesRoute
+  AuthenticatedComunicacionesRoute: typeof AuthenticatedComunicacionesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedEntrenadorRoute: typeof AuthenticatedEntrenadorRoute
   AuthenticatedEntrenadoresRoute: typeof AuthenticatedEntrenadoresRoute
@@ -483,6 +504,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCalendarioRoute: AuthenticatedCalendarioRoute,
   AuthenticatedCategoriasRoute: AuthenticatedCategoriasRoute,
   AuthenticatedCompeticionesRoute: AuthenticatedCompeticionesRoute,
+  AuthenticatedComunicacionesRoute: AuthenticatedComunicacionesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedEntrenadorRoute: AuthenticatedEntrenadorRoute,
   AuthenticatedEntrenadoresRoute: AuthenticatedEntrenadoresRoute,

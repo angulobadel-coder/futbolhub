@@ -64,7 +64,7 @@ const MANAGEMENT: NavItem[] = [
   { to: "#", label: "Estadísticas", icon: BarChart3, ready: false },
   { to: "#", label: "Evaluaciones", icon: Star, ready: false },
   { to: "/pagos", label: "Pagos", icon: CreditCard, ready: true },
-  { to: "#", label: "Comunicaciones", icon: Megaphone, ready: false },
+  { to: "/comunicaciones", label: "Comunicaciones", icon: Megaphone, ready: true },
   { to: "#", label: "Notificaciones", icon: Bell, ready: false },
   { to: "#", label: "Reportes", icon: FileBarChart, ready: false },
   { to: "#", label: "Configuración", icon: Settings, ready: false },
@@ -78,6 +78,7 @@ const COACH_NAV: NavItem[] = [
   { to: "/equipos", label: "Mis equipos", icon: Trophy, ready: true },
   { to: "/calendario", label: "Calendario", icon: CalendarDays, ready: true },
   { to: "/competiciones", label: "Competiciones", icon: Medal, ready: true },
+  { to: "/comunicaciones", label: "Comunicaciones", icon: Megaphone, ready: true },
   { to: "#", label: "Evaluaciones", icon: Star, ready: false },
   { to: "#", label: "Estadísticas", icon: BarChart3, ready: false },
 ];
