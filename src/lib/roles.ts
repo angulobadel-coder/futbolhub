@@ -23,8 +23,17 @@ const ROLE_ROUTES: Record<AppRole, string[]> = {
     "/calendario",
     "/competiciones",
     "/pagos",
+    "/comunicaciones",
   ],
-  coach: ["/entrenador", "/jugadores", "/equipos", "/entrenamientos", "/calendario", "/competiciones"],
+  coach: [
+    "/entrenador",
+    "/jugadores",
+    "/equipos",
+    "/entrenamientos",
+    "/calendario",
+    "/competiciones",
+    "/comunicaciones",
+  ],
   guardian: ["/acudiente"],
   player: ["/jugador"],
 };
