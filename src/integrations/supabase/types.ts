@@ -841,6 +841,50 @@ export type Database = {
           },
         ]
       }
+      whatsapp_webhook_events: {
+        Row: {
+          created_at: string
+          event_key: string
+          event_type: string | null
+          field: string
+          id: string
+          payload: Json
+          processed_at: string | null
+          school_id: string | null
+          wa_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_key: string
+          event_type?: string | null
+          field: string
+          id?: string
+          payload: Json
+          processed_at?: string | null
+          school_id?: string | null
+          wa_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_key?: string
+          event_type?: string | null
+          field?: string
+          id?: string
+          payload?: Json
+          processed_at?: string | null
+          school_id?: string | null
+          wa_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_webhook_events_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
