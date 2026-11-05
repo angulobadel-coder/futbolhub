@@ -43,6 +43,13 @@
       "when": 1791407388811,
       "tag": "0005_payments_unique_index",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793847457007,
+      "tag": "0006_training_methodology",
+      "breakpoints": true
     }
   ]
 }
