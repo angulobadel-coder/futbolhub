@@ -732,6 +732,171 @@ export type Database = {
           },
         ]
       }
+      training_exercises: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          duration_min: number
+          id: string
+          instructions: string | null
+          intensity: string
+          kind: string
+          materials: string | null
+          name: string
+          objective: string | null
+          school_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          duration_min?: number
+          id?: string
+          instructions?: string | null
+          intensity?: string
+          kind?: string
+          materials?: string | null
+          name: string
+          objective?: string | null
+          school_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          duration_min?: number
+          id?: string
+          instructions?: string | null
+          intensity?: string
+          kind?: string
+          materials?: string | null
+          name?: string
+          objective?: string | null
+          school_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "training_exercises_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      training_session_drills: {
+        Row: {
+          created_at: string
+          duration_min: number
+          exercise_id: string | null
+          id: string
+          instructions: string | null
+          materials: string | null
+          name: string
+          phase: string
+          position: number
+          school_id: string
+          session_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_min?: number
+          exercise_id?: string | null
+          id?: string
+          instructions?: string | null
+          materials?: string | null
+          name: string
+          phase?: string
+          position?: number
+          school_id: string
+          session_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_min?: number
+          exercise_id?: string | null
+          id?: string
+          instructions?: string | null
+          materials?: string | null
+          name?: string
+          phase?: string
+          position?: number
+          school_id?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "training_session_drills_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "training_exercises"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_session_drills_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_session_drills_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "training_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      training_session_feedback: {
+        Row: {
+          id: string
+          intensity: number | null
+          needs_work_players: string | null
+          notes: string | null
+          objective_rating: number | null
+          school_id: string
+          session_id: string
+          standout_players: string | null
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          intensity?: number | null
+          needs_work_players?: string | null
+          notes?: string | null
+          objective_rating?: number | null
+          school_id: string
+          session_id: string
+          standout_players?: string | null
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          intensity?: number | null
+          needs_work_players?: string | null
+          notes?: string | null
+          objective_rating?: number | null
+          school_id?: string
+          session_id?: string
+          standout_players?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "training_session_feedback_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "training_session_feedback_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: true
+            referencedRelation: "training_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       training_sessions: {
         Row: {
           category_id: string | null
@@ -890,6 +1055,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_edit_session: { Args: { _session_id: string }; Returns: boolean }
       can_manage_school: { Args: { _school_id: string }; Returns: boolean }
       can_view_player: {
         Args: { _player_id: string; _school_id: string }
