@@ -98,7 +98,7 @@ function MethodologyPage() {
     if (!sessionId && sessions.length) {
       const today = new Date().toISOString().slice(0, 10);
       const next = [...sessions].reverse().find((s) => s.session_date >= today) ?? sessions[0];
-      setSessionId(next.id);
+      if (next) setSessionId(next.id);
     }
   }, [sessions, sessionId]);
 
@@ -470,7 +470,7 @@ function FieldMode({ schoolId, session, players }: { schoolId: string; session: 
             <>
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <Badge variant="outline">{PHASES.find((p) => p.id === current.phase)?.label} · Tarea {idx + 1} de {order.length}</Badge>
-                {order[idx + 1] ? <span className="text-xs text-muted-foreground">Siguiente: {order[idx + 1].name}</span> : null}
+                {order[idx + 1] ? <span className="text-xs text-muted-foreground">Siguiente: {order[idx + 1]?.name}</span> : null}
               </div>
               <h2 className="font-display text-2xl font-semibold">{current.name}</h2>
               <p className={`text-center font-display text-7xl font-bold tabular-nums ${left === 0 ? "text-destructive" : "text-primary"}`}>{mm}:{ss}</p>

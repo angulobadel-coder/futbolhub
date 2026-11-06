@@ -24,8 +24,8 @@ export function phaseTotals(drills: DrillLike[]) {
 /** Duración programada de la sesión en minutos (null si no hay hora fin). */
 export function sessionMinutes(start: string, end: string | null) {
   if (!end) return null;
-  const [sh, sm] = start.split(":").map(Number);
-  const [eh, em] = end.split(":").map(Number);
+  const [sh = 0, sm = 0] = start.split(":").map(Number);
+  const [eh = 0, em = 0] = end.split(":").map(Number);
   const diff = eh * 60 + em - (sh * 60 + sm);
   return diff > 0 ? diff : null;
 }

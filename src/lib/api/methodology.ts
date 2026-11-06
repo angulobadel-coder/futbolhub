@@ -24,7 +24,7 @@ export async function listExercises(schoolId: string): Promise<Exercise[]> {
 
 export async function saveExercise(
   schoolId: string,
-  values: Partial<Exercise> & { name: string },
+  values: Omit<Partial<Exercise>, "id"> & { name: string; id?: string | undefined },
 ) {
   const { id, ...rest } = values;
   const payload = { ...rest, school_id: schoolId };
