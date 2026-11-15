@@ -27,6 +27,7 @@ import { Route as AuthenticatedEntrenadoresRouteImport } from './routes/_authent
 import { Route as AuthenticatedEntrenamientosRouteImport } from './routes/_authenticated/entrenamientos'
 import { Route as AuthenticatedEquiposRouteImport } from './routes/_authenticated/equipos'
 import { Route as AuthenticatedEstadisticasRouteImport } from './routes/_authenticated/estadisticas'
+import { Route as AuthenticatedEvaluacionesRouteImport } from './routes/_authenticated/evaluaciones'
 import { Route as AuthenticatedInvitacionesRouteImport } from './routes/_authenticated/invitaciones'
 import { Route as AuthenticatedJugadorRouteImport } from './routes/_authenticated/jugador'
 import { Route as AuthenticatedJugadoresRouteImport } from './routes/_authenticated/jugadores'
@@ -130,6 +131,12 @@ const AuthenticatedEstadisticasRoute =
     path: '/estadisticas',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedEvaluacionesRoute =
+  AuthenticatedEvaluacionesRouteImport.update({
+    id: '/evaluaciones',
+    path: '/evaluaciones',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedInvitacionesRoute =
   AuthenticatedInvitacionesRouteImport.update({
     id: '/invitaciones',
@@ -186,6 +193,7 @@ export interface FileRoutesByFullPath {
   '/entrenamientos': typeof AuthenticatedEntrenamientosRoute
   '/equipos': typeof AuthenticatedEquiposRoute
   '/estadisticas': typeof AuthenticatedEstadisticasRoute
+  '/evaluaciones': typeof AuthenticatedEvaluacionesRoute
   '/invitaciones': typeof AuthenticatedInvitacionesRoute
   '/jugador': typeof AuthenticatedJugadorRoute
   '/jugadores': typeof AuthenticatedJugadoresRoute
@@ -212,6 +220,7 @@ export interface FileRoutesByTo {
   '/entrenamientos': typeof AuthenticatedEntrenamientosRoute
   '/equipos': typeof AuthenticatedEquiposRoute
   '/estadisticas': typeof AuthenticatedEstadisticasRoute
+  '/evaluaciones': typeof AuthenticatedEvaluacionesRoute
   '/invitaciones': typeof AuthenticatedInvitacionesRoute
   '/jugador': typeof AuthenticatedJugadorRoute
   '/jugadores': typeof AuthenticatedJugadoresRoute
@@ -240,6 +249,7 @@ export interface FileRoutesById {
   '/_authenticated/entrenamientos': typeof AuthenticatedEntrenamientosRoute
   '/_authenticated/equipos': typeof AuthenticatedEquiposRoute
   '/_authenticated/estadisticas': typeof AuthenticatedEstadisticasRoute
+  '/_authenticated/evaluaciones': typeof AuthenticatedEvaluacionesRoute
   '/_authenticated/invitaciones': typeof AuthenticatedInvitacionesRoute
   '/_authenticated/jugador': typeof AuthenticatedJugadorRoute
   '/_authenticated/jugadores': typeof AuthenticatedJugadoresRoute
@@ -268,6 +278,7 @@ export interface FileRouteTypes {
     | '/entrenamientos'
     | '/equipos'
     | '/estadisticas'
+    | '/evaluaciones'
     | '/invitaciones'
     | '/jugador'
     | '/jugadores'
@@ -294,6 +305,7 @@ export interface FileRouteTypes {
     | '/entrenamientos'
     | '/equipos'
     | '/estadisticas'
+    | '/evaluaciones'
     | '/invitaciones'
     | '/jugador'
     | '/jugadores'
@@ -321,6 +333,7 @@ export interface FileRouteTypes {
     | '/_authenticated/entrenamientos'
     | '/_authenticated/equipos'
     | '/_authenticated/estadisticas'
+    | '/_authenticated/evaluaciones'
     | '/_authenticated/invitaciones'
     | '/_authenticated/jugador'
     | '/_authenticated/jugadores'
@@ -469,6 +482,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEstadisticasRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/evaluaciones': {
+      id: '/_authenticated/evaluaciones'
+      path: '/evaluaciones'
+      fullPath: '/evaluaciones'
+      preLoaderRoute: typeof AuthenticatedEvaluacionesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/invitaciones': {
       id: '/_authenticated/invitaciones'
       path: '/invitaciones'
@@ -533,6 +553,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedEntrenamientosRoute: typeof AuthenticatedEntrenamientosRoute
   AuthenticatedEquiposRoute: typeof AuthenticatedEquiposRoute
   AuthenticatedEstadisticasRoute: typeof AuthenticatedEstadisticasRoute
+  AuthenticatedEvaluacionesRoute: typeof AuthenticatedEvaluacionesRoute
   AuthenticatedInvitacionesRoute: typeof AuthenticatedInvitacionesRoute
   AuthenticatedJugadorRoute: typeof AuthenticatedJugadorRoute
   AuthenticatedJugadoresRoute: typeof AuthenticatedJugadoresRoute
@@ -553,6 +574,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedEntrenamientosRoute: AuthenticatedEntrenamientosRoute,
   AuthenticatedEquiposRoute: AuthenticatedEquiposRoute,
   AuthenticatedEstadisticasRoute: AuthenticatedEstadisticasRoute,
+  AuthenticatedEvaluacionesRoute: AuthenticatedEvaluacionesRoute,
   AuthenticatedInvitacionesRoute: AuthenticatedInvitacionesRoute,
   AuthenticatedJugadorRoute: AuthenticatedJugadorRoute,
   AuthenticatedJugadoresRoute: AuthenticatedJugadoresRoute,

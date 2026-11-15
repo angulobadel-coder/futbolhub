@@ -64,7 +64,7 @@ const MANAGEMENT: NavItem[] = [
   { to: "/invitaciones", label: "Invitaciones", icon: Mail, ready: true },
   { to: "#", label: "Partidos", icon: Swords, ready: false },
   { to: "/estadisticas", label: "Estadísticas", icon: BarChart3, ready: true },
-  { to: "#", label: "Evaluaciones", icon: Star, ready: false },
+  { to: "/evaluaciones", label: "Evaluaciones", icon: Star, ready: true },
   { to: "/pagos", label: "Pagos", icon: CreditCard, ready: true },
   { to: "/comunicaciones", label: "Comunicaciones", icon: Megaphone, ready: true },
   { to: "#", label: "Notificaciones", icon: Bell, ready: false },
@@ -82,7 +82,7 @@ const COACH_NAV: NavItem[] = [
   { to: "/calendario", label: "Calendario", icon: CalendarDays, ready: true },
   { to: "/competiciones", label: "Competiciones", icon: Medal, ready: true },
   { to: "/comunicaciones", label: "Comunicaciones", icon: Megaphone, ready: true },
-  { to: "#", label: "Evaluaciones", icon: Star, ready: false },
+  { to: "/evaluaciones", label: "Evaluaciones", icon: Star, ready: true },
   { to: "/estadisticas", label: "Estadísticas", icon: BarChart3, ready: true },
 ];
 
@@ -93,7 +93,7 @@ const GUARDIAN_NAV: NavItem[] = [
 
 const PLAYER_NAV: NavItem[] = [
   { to: "/jugador", label: "Mi portal", icon: Users, ready: true },
-  { to: "#", label: "Mis evaluaciones", icon: Star, ready: false },
+  { to: "/jugador", label: "Mis evaluaciones", icon: Star, ready: true },
   { to: "#", label: "Mis estadísticas", icon: BarChart3, ready: false },
 ];
 

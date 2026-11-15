@@ -13,6 +13,8 @@ import { listCategories, listPlayers, listTeams } from "@/lib/api/school-data";
 import { listAttendance, listEvents, listTrainingSessions } from "@/lib/api/training";
 import { computeAttendance, LOW_ATTENDANCE_THRESHOLD } from "@/lib/rules/attendance";
 import { useTenant } from "@/lib/tenant";
+import { listEvaluations } from "@/lib/api/evaluations";
+import { EvaluationHistory } from "@/components/evaluations/evaluation-history";
 import { listPayments } from "@/lib/api/payments";
 import { formatCOP, paymentStatus, PAYMENT_STATUS_LABEL } from "@/lib/rules/payments";
 
@@ -48,16 +50,17 @@ function GuardianPortal() {
     queryKey: ["guardian-portal", schoolId],
     enabled: !!schoolId,
     queryFn: async () => {
-      const [players, teams, categories, sessions, attendance, events, payments] = await Promise.all([
+      const [players, teams, categories, sessions, attendance, events, evaluations, payments] = await Promise.all([
         listPlayers(schoolId),
         listTeams(schoolId),
         listCategories(schoolId),
         listTrainingSessions(schoolId),
         listAttendance(schoolId),
         listEvents(schoolId),
+          listEvaluations(schoolId),
         listPayments(schoolId),
       ]);
-      return { players, teams, categories, sessions, attendance, events, payments };
+      return { players, teams, categories, sessions, attendance, events, evaluations, payments };
     },
   });
 
@@ -66,7 +69,7 @@ function GuardianPortal() {
 
   if (!q.data) return null;
 
-  const { players, teams, categories, sessions, attendance, events, payments } = q.data;
+  const { players, teams, categories, sessions, attendance, events, evaluations, payments } = q.data;
 
   if (players.length === 0) {
     return (
@@ -259,6 +262,14 @@ function GuardianPortal() {
               );
             })
           )}
+        </CardContent>
+      </Card>
+      <Card className="border-border/70 bg-card/80">
+        <CardHeader>
+          <CardTitle className="text-base">Boletín de evaluaciones</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <EvaluationHistory items={evaluations.filter((e) => e.player_id === child.id)} />
         </CardContent>
       </Card>
     </div>

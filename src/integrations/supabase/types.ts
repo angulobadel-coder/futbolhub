@@ -499,6 +499,69 @@ export type Database = {
           },
         ]
       }
+      player_evaluations: {
+        Row: {
+          attitude: number
+          created_at: string
+          created_by: string | null
+          evaluated_on: string
+          id: string
+          improvements: string | null
+          period: string
+          physical: number
+          player_id: string
+          school_id: string
+          strengths: string | null
+          tactics: number
+          technique: number
+        }
+        Insert: {
+          attitude: number
+          created_at?: string
+          created_by?: string | null
+          evaluated_on?: string
+          id?: string
+          improvements?: string | null
+          period: string
+          physical: number
+          player_id: string
+          school_id: string
+          strengths?: string | null
+          tactics: number
+          technique: number
+        }
+        Update: {
+          attitude?: number
+          created_at?: string
+          created_by?: string | null
+          evaluated_on?: string
+          id?: string
+          improvements?: string | null
+          period?: string
+          physical?: number
+          player_id?: string
+          school_id?: string
+          strengths?: string | null
+          tactics?: number
+          technique?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "player_evaluations_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "player_evaluations_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       player_guardians: {
         Row: {
           created_at: string

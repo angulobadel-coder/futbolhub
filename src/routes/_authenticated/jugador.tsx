@@ -11,6 +11,8 @@ import { listCategories, listCoaches, listPlayers, listTeams } from "@/lib/api/s
 import { listAttendance, listEvents, listTrainingSessions } from "@/lib/api/training";
 import { computeAttendance, LOW_ATTENDANCE_THRESHOLD } from "@/lib/rules/attendance";
 import { useTenant } from "@/lib/tenant";
+import { listEvaluations } from "@/lib/api/evaluations";
+import { EvaluationHistory } from "@/components/evaluations/evaluation-history";
 
 export const Route = createFileRoute("/_authenticated/jugador")({
   head: () => ({
@@ -43,7 +45,7 @@ function PlayerPortal() {
     queryKey: ["player-portal", schoolId],
     enabled: !!schoolId,
     queryFn: async () => {
-      const [players, teams, categories, coaches, sessions, attendance, events] =
+      const [players, teams, categories, coaches, sessions, attendance, events, evaluations] =
         await Promise.all([
           listPlayers(schoolId),
           listTeams(schoolId),
@@ -52,8 +54,9 @@ function PlayerPortal() {
           listTrainingSessions(schoolId),
           listAttendance(schoolId),
           listEvents(schoolId),
+          listEvaluations(schoolId),
         ]);
-      return { players, teams, categories, coaches, sessions, attendance, events };
+      return { players, teams, categories, coaches, sessions, attendance, events, evaluations };
     },
   });
 
@@ -62,7 +65,7 @@ function PlayerPortal() {
 
   if (!q.data) return null;
 
-  const { players, teams, categories, coaches, sessions, attendance, events } = q.data;
+  const { players, teams, categories, coaches, sessions, attendance, events, evaluations } = q.data;
   const me = players.find((p) => p.user_id === user?.id) ?? players[0];
 
   if (!me) {
@@ -170,6 +173,14 @@ function PlayerPortal() {
           </CardContent>
         </Card>
       </div>
+      <Card className="border-border/70 bg-card/80">
+        <CardHeader>
+          <CardTitle className="text-base">Mis evaluaciones</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <EvaluationHistory items={evaluations.filter((e) => e.player_id === me.id)} />
+        </CardContent>
+      </Card>
     </div>
   );
 }

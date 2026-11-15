@@ -50,6 +50,13 @@
       "when": 1793847457007,
       "tag": "0006_training_methodology",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1794771609461,
+      "tag": "0007_player_evaluations",
+      "breakpoints": true
     }
   ]
 }
