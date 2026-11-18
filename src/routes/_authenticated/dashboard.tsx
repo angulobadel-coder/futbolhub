@@ -3,10 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { CalendarDays, ClipboardCheck, Percent, Shield, TriangleAlert, Trophy, UserRound, Users } from "lucide-react";
 
 import { useTenant } from "@/lib/tenant";
+import { useSchoolSettings } from "@/lib/api/settings";
 import { listCategories, listCoaches, listPlayers, listTeams } from "@/lib/api/school-data";
 import { listAttendance, listTrainingSessions } from "@/lib/api/training";
 import { resolveScope, sessionInScope } from "@/lib/api/scope";
-import { averageAttendance, computeAttendance, lowAttendancePlayers } from "@/lib/rules/attendance";
+import { LOW_ATTENDANCE_THRESHOLD, averageAttendance, computeAttendance, lowAttendancePlayers } from "@/lib/rules/attendance";
 import { evaluateAlerts } from "@/lib/rules/alerts";
 import { PageHeader } from "@/components/common/page-header";
 import { StatCard } from "@/components/common/stat-card";
@@ -31,6 +32,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 
 function DashboardPage() {
   const { school, role, user } = useTenant();
+  const threshold = useSchoolSettings(school?.id).data?.attendance_threshold ?? LOW_ATTENDANCE_THRESHOLD;
   const schoolId = school?.id;
 
   const query = useQuery({
@@ -68,7 +70,7 @@ function DashboardPage() {
   const done = sessions.filter((s) => s.status === "realizado");
   const stats = computeAttendance(scopedAttendance, sessions);
   const average = averageAttendance(stats);
-  const lowAttendance = lowAttendancePlayers(stats, scopedPlayers);
+  const lowAttendance = lowAttendancePlayers(stats, scopedPlayers, threshold);
 
   const alerts = evaluateAlerts({
     players: scopedPlayers,

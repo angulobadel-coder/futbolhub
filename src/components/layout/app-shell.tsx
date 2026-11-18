@@ -69,7 +69,7 @@ const MANAGEMENT: NavItem[] = [
   { to: "/comunicaciones", label: "Comunicaciones", icon: Megaphone, ready: true },
   { to: "#", label: "Notificaciones", icon: Bell, ready: false },
   { to: "#", label: "Reportes", icon: FileBarChart, ready: false },
-  { to: "#", label: "Configuración", icon: Settings, ready: false },
+  { to: "/configuracion", label: "Configuración", icon: Settings, ready: true },
 ];
 
 const COACH_NAV: NavItem[] = [

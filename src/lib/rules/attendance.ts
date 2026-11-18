@@ -57,6 +57,7 @@ export function averageAttendance(stats: Map<string, PlayerAttendance>) {
 export function lowAttendancePlayers(
   stats: Map<string, PlayerAttendance>,
   players: Player[],
+  threshold: number = LOW_ATTENDANCE_THRESHOLD,
 ) {
   return players
     .map((p) => ({ player: p, stat: stats.get(p.id) }))
@@ -64,6 +65,6 @@ export function lowAttendancePlayers(
       (row): row is { player: Player; stat: PlayerAttendance } =>
         !!row.stat &&
         row.stat.registered >= MIN_RECORDS_FOR_ALERT &&
-        row.stat.percentage < LOW_ATTENDANCE_THRESHOLD,
+        row.stat.percentage < threshold,
     );
 }

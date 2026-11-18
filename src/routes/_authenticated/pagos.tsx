@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertTriangle, CalendarPlus, CheckCircle2, Plus, Wallet } from "lucide-react";
@@ -32,6 +32,7 @@ import {
   type PaymentStatus,
 } from "@/lib/rules/payments";
 import { useTenant } from "@/lib/tenant";
+import { useSchoolSettings } from "@/lib/api/settings";
 
 export const Route = createFileRoute("/_authenticated/pagos")({
   head: () => ({
@@ -244,8 +245,15 @@ function MonthlyDialog(props: {
 }) {
   const month = today().slice(0, 7);
   const [period, setPeriod] = useState(month);
+  const settings = useSchoolSettings(props.schoolId).data;
   const [amount, setAmount] = useState("");
   const [dueDay, setDueDay] = useState("10");
+  const [touched, setTouched] = useState(false);
+  useEffect(() => {
+    if (!settings || touched) return;
+    if (settings.monthly_fee) setAmount(String(settings.monthly_fee));
+    setDueDay(String(settings.payment_due_day));
+  }, [settings, touched, props.open]);
   const [categoryId, setCategoryId] = useState("");
 
   const targets = props.players.filter(
@@ -291,12 +299,12 @@ function MonthlyDialog(props: {
             </div>
             <div className="space-y-1">
               <Label>Día límite de pago</Label>
-              <Input type="number" min={1} max={28} value={dueDay} onChange={(e) => setDueDay(e.target.value)} />
+              <Input type="number" min={1} max={28} value={dueDay} onChange={(e) => { setTouched(true); setDueDay(e.target.value); }} />
             </div>
           </div>
           <div className="space-y-1">
             <Label>Valor (COP)</Label>
-            <Input type="number" min={1} placeholder="80000" value={amount} onChange={(e) => setAmount(e.target.value)} />
+            <Input type="number" min={1} placeholder="80000" value={amount} onChange={(e) => { setTouched(true); setAmount(e.target.value); }} />
           </div>
           <div className="space-y-1">
             <Label>Categoría</Label>

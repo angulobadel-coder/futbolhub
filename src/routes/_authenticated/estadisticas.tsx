@@ -16,6 +16,7 @@ import { resolveScope, sessionInScope } from "@/lib/api/scope";
 import { computeAttendance, LOW_ATTENDANCE_THRESHOLD, MIN_RECORDS_FOR_ALERT } from "@/lib/rules/attendance";
 import { attendanceBy, sessionMinutes, weeklyAttendance } from "@/lib/rules/stats";
 import { useTenant } from "@/lib/tenant";
+import { useSchoolSettings } from "@/lib/api/settings";
 
 export const Route = createFileRoute("/_authenticated/estadisticas")({
   head: () => ({
@@ -39,6 +40,7 @@ const teamCfg = { porcentaje: { label: "% asistencia", color: "var(--color-prima
 
 function StatsPage() {
   const { school, role, user } = useTenant();
+  const threshold = useSchoolSettings(school?.id).data?.attendance_threshold ?? LOW_ATTENDANCE_THRESHOLD;
   const schoolId = school?.id ?? "";
   const [categoryId, setCategoryId] = useState("");
   const [teamId, setTeamId] = useState("");
@@ -87,7 +89,7 @@ function StatsPage() {
       .map((p) => ({ ...p, name: playerName.get(p.playerId) ?? "Jugador" }))
       .sort((a, b) => a.percentage - b.percentage);
     const alerts = players.filter(
-      (p) => p.registered >= MIN_RECORDS_FOR_ALERT && p.percentage < LOW_ATTENDANCE_THRESHOLD,
+      (p) => p.registered >= MIN_RECORDS_FOR_ALERT && p.percentage < threshold,
     );
     return {
       teams,
@@ -101,7 +103,7 @@ function StatsPage() {
       players,
       alerts,
     };
-  }, [q.data, role, user?.id, categoryId, teamId]);
+  }, [q.data, role, user?.id, categoryId, teamId, threshold]);
 
   return (
     <div className="space-y-6">
@@ -129,7 +131,7 @@ function StatsPage() {
             <StatCard label="Presentes esta semana" value={view.thisWeek} icon={CalendarCheck} hint="Última semana con registros" />
             <StatCard label="Asistencia media" value={`${view.pct}%`} icon={Activity} />
             <StatCard label="Entrenos realizados" value={view.done} icon={Timer} hint={`${Math.round(view.minutes / 60)} h entrenadas`} />
-            <StatCard label="Alertas" value={view.alerts.length} icon={AlertTriangle} hint={`Bajo ${LOW_ATTENDANCE_THRESHOLD}% de asistencia`} />
+            <StatCard label="Alertas" value={view.alerts.length} icon={AlertTriangle} hint={`Bajo ${threshold}% de asistencia`} />
           </div>
 
           {view.weekly.length === 0 ? (
@@ -177,7 +179,7 @@ function StatsPage() {
                   </thead>
                   <tbody>
                     {view.players.map((p) => {
-                      const low = p.registered >= MIN_RECORDS_FOR_ALERT && p.percentage < LOW_ATTENDANCE_THRESHOLD;
+                      const low = p.registered >= MIN_RECORDS_FOR_ALERT && p.percentage < threshold;
                       return (
                         <tr key={p.playerId} className="border-t border-border">
                           <td className="py-2 font-medium">{p.name}</td>

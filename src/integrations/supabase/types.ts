@@ -713,6 +713,65 @@ export type Database = {
         }
         Relationships: []
       }
+      school_settings: {
+        Row: {
+          address: string | null
+          attendance_threshold: number
+          contact_email: string | null
+          contact_phone: string | null
+          late_fee: number | null
+          monthly_fee: number | null
+          notify_attendance: boolean
+          notify_payments: boolean
+          payment_due_day: number
+          primary_color: string | null
+          school_id: string
+          season_label: string | null
+          updated_at: string
+          whatsapp_enabled: boolean
+        }
+        Insert: {
+          address?: string | null
+          attendance_threshold?: number
+          contact_email?: string | null
+          contact_phone?: string | null
+          late_fee?: number | null
+          monthly_fee?: number | null
+          notify_attendance?: boolean
+          notify_payments?: boolean
+          payment_due_day?: number
+          primary_color?: string | null
+          school_id: string
+          season_label?: string | null
+          updated_at?: string
+          whatsapp_enabled?: boolean
+        }
+        Update: {
+          address?: string | null
+          attendance_threshold?: number
+          contact_email?: string | null
+          contact_phone?: string | null
+          late_fee?: number | null
+          monthly_fee?: number | null
+          notify_attendance?: boolean
+          notify_payments?: boolean
+          payment_due_day?: number
+          primary_color?: string | null
+          school_id?: string
+          season_label?: string | null
+          updated_at?: string
+          whatsapp_enabled?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "school_settings_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: true
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       schools: {
         Row: {
           city: string | null
@@ -1137,6 +1196,15 @@ export type Database = {
       is_school_staff: { Args: { _school_id: string }; Returns: boolean }
       is_session_coach: { Args: { _coach_id: string }; Returns: boolean }
       is_superadmin: { Args: never; Returns: boolean }
+      update_school_identity: {
+        Args: {
+          _city: string
+          _logo_url: string
+          _name: string
+          _school_id: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "superadmin" | "director" | "coach" | "guardian" | "player"

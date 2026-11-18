@@ -27,6 +27,7 @@ const ROLE_ROUTES: Record<AppRole, string[]> = {
     "/evaluaciones",
     "/pagos",
     "/comunicaciones",
+    "/configuracion",
   ],
   coach: [
     "/entrenador",
