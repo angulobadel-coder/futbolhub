@@ -88,13 +88,13 @@ const COACH_NAV: NavItem[] = [
 
 const GUARDIAN_NAV: NavItem[] = [
   { to: "/acudiente", label: "Mis hijos y pagos", icon: HeartHandshake, ready: true },
-  { to: "#", label: "Comunicaciones", icon: Megaphone, ready: false },
+  { to: "/comunicaciones", label: "Comunicaciones", icon: Megaphone, ready: true },
 ];
 
 const PLAYER_NAV: NavItem[] = [
   { to: "/jugador", label: "Mi portal", icon: Users, ready: true },
   { to: "/jugador", label: "Mis evaluaciones", icon: Star, ready: true },
-  { to: "#", label: "Mis estadísticas", icon: BarChart3, ready: false },
+  { to: "/mis-estadisticas", label: "Mis estadísticas", icon: BarChart3, ready: true },
 ];
 
 function navFor(role: AppRole | undefined, hasSchool: boolean): NavItem[] {

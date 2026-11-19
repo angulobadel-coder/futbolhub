@@ -41,8 +41,8 @@ const ROLE_ROUTES: Record<AppRole, string[]> = {
     "/evaluaciones",
     "/comunicaciones",
   ],
-  guardian: ["/acudiente"],
-  player: ["/jugador"],
+  guardian: ["/acudiente", "/comunicaciones"],
+  player: ["/jugador", "/mis-estadisticas"],
 };
 
 export function canAccessPath(role: AppRole | undefined, pathname: string) {

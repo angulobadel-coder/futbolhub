@@ -33,6 +33,7 @@ import { Route as AuthenticatedInvitacionesRouteImport } from './routes/_authent
 import { Route as AuthenticatedJugadorRouteImport } from './routes/_authenticated/jugador'
 import { Route as AuthenticatedJugadoresRouteImport } from './routes/_authenticated/jugadores'
 import { Route as AuthenticatedMetodologiaRouteImport } from './routes/_authenticated/metodologia'
+import { Route as AuthenticatedMisEstadisticasRouteImport } from './routes/_authenticated/mis-estadisticas'
 import { Route as AuthenticatedPagosRouteImport } from './routes/_authenticated/pagos'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
@@ -166,6 +167,12 @@ const AuthenticatedMetodologiaRoute =
     path: '/metodologia',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedMisEstadisticasRoute =
+  AuthenticatedMisEstadisticasRouteImport.update({
+    id: '/mis-estadisticas',
+    path: '/mis-estadisticas',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedPagosRoute = AuthenticatedPagosRouteImport.update({
   id: '/pagos',
   path: '/pagos',
@@ -206,6 +213,7 @@ export interface FileRoutesByFullPath {
   '/jugador': typeof AuthenticatedJugadorRoute
   '/jugadores': typeof AuthenticatedJugadoresRoute
   '/metodologia': typeof AuthenticatedMetodologiaRoute
+  '/mis-estadisticas': typeof AuthenticatedMisEstadisticasRoute
   '/pagos': typeof AuthenticatedPagosRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
@@ -234,6 +242,7 @@ export interface FileRoutesByTo {
   '/jugador': typeof AuthenticatedJugadorRoute
   '/jugadores': typeof AuthenticatedJugadoresRoute
   '/metodologia': typeof AuthenticatedMetodologiaRoute
+  '/mis-estadisticas': typeof AuthenticatedMisEstadisticasRoute
   '/pagos': typeof AuthenticatedPagosRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
@@ -264,6 +273,7 @@ export interface FileRoutesById {
   '/_authenticated/jugador': typeof AuthenticatedJugadorRoute
   '/_authenticated/jugadores': typeof AuthenticatedJugadoresRoute
   '/_authenticated/metodologia': typeof AuthenticatedMetodologiaRoute
+  '/_authenticated/mis-estadisticas': typeof AuthenticatedMisEstadisticasRoute
   '/_authenticated/pagos': typeof AuthenticatedPagosRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
@@ -294,6 +304,7 @@ export interface FileRouteTypes {
     | '/jugador'
     | '/jugadores'
     | '/metodologia'
+    | '/mis-estadisticas'
     | '/pagos'
     | '/.lovable/oauth/consent'
     | '/admin/'
@@ -322,6 +333,7 @@ export interface FileRouteTypes {
     | '/jugador'
     | '/jugadores'
     | '/metodologia'
+    | '/mis-estadisticas'
     | '/pagos'
     | '/.lovable/oauth/consent'
     | '/admin'
@@ -351,6 +363,7 @@ export interface FileRouteTypes {
     | '/_authenticated/jugador'
     | '/_authenticated/jugadores'
     | '/_authenticated/metodologia'
+    | '/_authenticated/mis-estadisticas'
     | '/_authenticated/pagos'
     | '/.lovable/oauth/consent'
     | '/_authenticated/admin/'
@@ -537,6 +550,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMetodologiaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/mis-estadisticas': {
+      id: '/_authenticated/mis-estadisticas'
+      path: '/mis-estadisticas'
+      fullPath: '/mis-estadisticas'
+      preLoaderRoute: typeof AuthenticatedMisEstadisticasRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/pagos': {
       id: '/_authenticated/pagos'
       path: '/pagos'
@@ -579,6 +599,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedJugadorRoute: typeof AuthenticatedJugadorRoute
   AuthenticatedJugadoresRoute: typeof AuthenticatedJugadoresRoute
   AuthenticatedMetodologiaRoute: typeof AuthenticatedMetodologiaRoute
+  AuthenticatedMisEstadisticasRoute: typeof AuthenticatedMisEstadisticasRoute
   AuthenticatedPagosRoute: typeof AuthenticatedPagosRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
@@ -601,6 +622,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedJugadorRoute: AuthenticatedJugadorRoute,
   AuthenticatedJugadoresRoute: AuthenticatedJugadoresRoute,
   AuthenticatedMetodologiaRoute: AuthenticatedMetodologiaRoute,
+  AuthenticatedMisEstadisticasRoute: AuthenticatedMisEstadisticasRoute,
   AuthenticatedPagosRoute: AuthenticatedPagosRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }

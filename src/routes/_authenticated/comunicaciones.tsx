@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { sendWhatsAppTest, whatsappStatus } from "@/lib/api/whatsapp.functions";
 import { useTenant } from "@/lib/tenant";
+import { GuardianCommunications } from "@/components/communications/guardian-communications";
 
 export const Route = createFileRoute("/_authenticated/comunicaciones")({
   head: () => ({
@@ -44,6 +45,18 @@ export const Route = createFileRoute("/_authenticated/comunicaciones")({
 function ComunicacionesPage() {
   const { role } = useTenant();
   const canSend = role === "superadmin" || role === "director" || role === "coach";
+
+  if (role === "guardian") {
+    return (
+      <div className="space-y-6">
+        <PageHeader
+          title="Comunicaciones"
+          description="Contactos de la escuela, entrenadores de tus hijos y avisos."
+        />
+        <GuardianCommunications />
+      </div>
+    );
+  }
 
   if (!canSend) {
     return (
